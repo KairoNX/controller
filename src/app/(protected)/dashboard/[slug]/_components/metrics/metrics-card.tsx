@@ -9,11 +9,11 @@ const MetricsCard = (props: Props) => {
   const { data } = useQueryAutomations()
   const comments = data?.data.reduce((current, next) => {
     return current + next.listener?.commentCount!
-  }, 0)
+  }, 0) ?? 0
 
   const dms = data?.data?.reduce((current, next) => {
     return current + next.listener?.dmCount!
-  }, 0)
+  }, 0) ?? 0
 
   const [animatedComments, setAnimatedComments] = useState(0)
   const [animatedDms, setAnimatedDms] = useState(0)

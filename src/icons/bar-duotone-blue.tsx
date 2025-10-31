@@ -1,6 +1,11 @@
-export const BarDuoToneBlue = () => {
+type Props = {
+    className?: string
+}
+
+export const BarDuoToneBlue = (props: Props) => {
     return (
         <svg
+            className={props.className}
             width="32"
             height="32"
             viewBox="0 0 32 32"

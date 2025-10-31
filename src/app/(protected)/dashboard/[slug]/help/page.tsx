@@ -2,7 +2,6 @@
 import React from 'react'
 import { HelpDuoToneBlue } from '@/icons'
 import { 
-  Message, 
   FileText, 
   Video, 
   Globe,
@@ -175,7 +174,7 @@ const Page = (props: Props) => {
           <div>
             <h2 className="text-2xl font-semibold mb-2">Still need help?</h2>
             <p className="text-text-secondary">
-              Our support team is here to assist you. Reach out and we'll get back to you as soon as possible.
+              Our support team is here to assist you. Reach out and we&#39;ll get back to you as soon as possible.
             </p>
           </div>
           <button className="px-6 py-3 rounded-full bg-light-blue hover:bg-light-blue/90 text-white font-medium transition-colors duration-300">

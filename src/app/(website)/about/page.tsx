@@ -105,7 +105,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-semibold mb-4">Our Technology</h2>
             <p className="text-muted-foreground leading-relaxed">
               Built with modern web technologies including Next.js, TypeScript, and OpenAI, Slide provides 
-              a seamless experience that's both powerful and easy to use. We leverage cutting-edge AI to understand 
+              a seamless experience that&#39;s both powerful and easy to use. We leverage cutting-edge AI to understand 
               context and generate appropriate responses, while our robust infrastructure ensures your automations 
               run smoothly 24/7.
             </p>
