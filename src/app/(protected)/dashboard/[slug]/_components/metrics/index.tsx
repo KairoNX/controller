@@ -5,7 +5,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Area,
   AreaChart,
@@ -33,8 +33,10 @@ const chartConfig = {
 }
 
 const Chart = (props: Props) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
   return (
-    <Card className="border-none p-0">
+    <Card className="border-none p-0 group hover:scale-[1.01] transition-transform duration-300">
       <CardContent className="p-0">
         <ResponsiveContainer
           height={300}
@@ -48,18 +50,41 @@ const Chart = (props: Props) => {
                 left: 12,
                 right: 12,
               }}
+              onMouseMove={(state) => {
+                if (state?.activeTooltipIndex !== undefined) {
+                  setActiveIndex(state.activeTooltipIndex)
+                }
+              }}
+              onMouseLeave={() => setActiveIndex(null)}
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid 
+                vertical={false} 
+                strokeDasharray="3 3"
+                className="opacity-30 group-hover:opacity-50 transition-opacity duration-300"
+              />
               <XAxis
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
                 tickFormatter={(value) => value.slice(0, 3)}
+                className="transition-all duration-300"
+                style={{
+                  fill: 'var(--text-secondary)',
+                }}
               />
               <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent indicator="line" />}
+                cursor={{ 
+                  stroke: 'var(--color-desktop)',
+                  strokeWidth: 2,
+                  strokeDasharray: '5 5',
+                }}
+                content={
+                  <ChartTooltipContent 
+                    indicator="line"
+                    className="animate-in fade-in slide-in-from-bottom-2 duration-200"
+                  />
+                }
               />
               <Area
                 dataKey="desktop"
@@ -67,6 +92,14 @@ const Chart = (props: Props) => {
                 fill="var(--color-desktop)"
                 fillOpacity={0.4}
                 stroke="var(--color-desktop)"
+                strokeWidth={activeIndex !== null ? 3 : 2}
+                className="transition-all duration-300"
+                style={{
+                  filter: activeIndex !== null ? 'drop-shadow(0 0 8px hsl(var(--chart-1) / 0.5))' : 'none',
+                  transition: 'all 0.3s ease',
+                }}
+                animationDuration={1000}
+                animationBegin={0}
               />
             </AreaChart>
           </ChartContainer>

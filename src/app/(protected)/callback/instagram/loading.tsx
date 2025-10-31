@@ -1,15 +1,7 @@
-import Loader from '@/components/global/loader'
-import { LogoSmall } from '@/svgs/logo-small'
+import { Loader3D } from '@/components/global/loader/3d-loader'
 
 const Loading = () => {
-  return (
-    <div className="h-screen flex flex-col gap-4 justify-center items-center">
-      <div className="animate-pulse">
-        <LogoSmall />
-      </div>
-      <Loader state>Connecting to Instagram...</Loader>
-    </div>
-  )
+  return <Loader3D />
 }
 
 export default Loading

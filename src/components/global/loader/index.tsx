@@ -20,3 +20,6 @@ const Loader = ({ children, state, className, color }: Props) => {
 }
 
 export default Loader
+export { Loader3D } from './3d-loader'
+export { Spinner3D } from './3d-spinner'
+export { Spinner } from './spinner'

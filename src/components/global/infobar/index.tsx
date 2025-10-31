@@ -16,6 +16,7 @@ import CreateAutomation from '../create-automation'
 import Search from './search'
 import { Notifications } from './notifications'
 import MainBreadCrumb from '../bread-crumbs/main-bread-crumb'
+import Link from 'next/link'
 
 type Props = {
   slug: string
@@ -51,15 +52,18 @@ const InfoBar = ({ slug }: Props) => {
                     className="bg-[#333336]"
                   />
                 </div>
-                <div className="px-3 flex flex-col gap-y-5">
+                <div className="px-3 flex flex-col gap-y-2">
                   <div className="flex gap-x-2">
                     <ClerkAuthState />
                     <p className="text-[#9B9CA0]">Profile</p>
                   </div>
-                  <div className="flex gap-x-3">
+                  <Link
+                    href={`/dashboard/${slug}/help`}
+                    className="flex gap-x-3 rounded-full p-3 text-[#9B9CA0] hover:bg-[#0f0f0f] transition-colors"
+                  >
                     <HelpDuoToneWhite />
                     <p className="text-[#9B9CA0]">Help</p>
-                  </div>
+                  </Link>
                 </div>
                 <SubscriptionPlan type="FREE">
                   <div className="flex-1 flex flex-col justify-end">

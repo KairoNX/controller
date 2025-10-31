@@ -22,3 +22,6 @@ const Logo = ({ size = 'md', className }: Props) => {
 
 export default Logo
 
+
+
+

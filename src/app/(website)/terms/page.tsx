@@ -32,8 +32,8 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By accessing and using Slide ("the Service"), you accept and agree to be bound by these Terms of Service 
-              ("Terms"). If you do not agree to these Terms, please do not use the Service. We reserve the right to 
+              By accessing and using Slide (&#34;the Service&#34;), you accept and agree to be bound by these Terms of Service 
+              (&#34;Terms&#34;). If you do not agree to these Terms, please do not use the Service. We reserve the right to 
               modify these Terms at any time, and your continued use of the Service constitutes acceptance of any changes.
             </p>
           </section>
@@ -83,7 +83,7 @@ export default function TermsPage() {
             </p>
             <ul className="space-y-2 text-muted-foreground">
               <li>• Violate any applicable laws or regulations</li>
-              <li>• Violate Instagram's Terms of Service or Community Guidelines</li>
+              <li>• Violate Instagram&#39;s Terms of Service or Community Guidelines</li>
               <li>• Send spam, unsolicited messages, or engage in harassment</li>
               <li>• Impersonate any person or entity</li>
               <li>• Interfere with or disrupt the Service or servers</li>
@@ -102,10 +102,10 @@ export default function TermsPage() {
             </p>
             <ul className="space-y-2 text-muted-foreground">
               <li>• You authorize us to access your Instagram account as necessary to provide the Service</li>
-              <li>• You acknowledge that Instagram's terms and policies apply to your use of Instagram</li>
+              <li>• You acknowledge that Instagram&#39;s terms and policies apply to your use of Instagram</li>
               <li>• You understand that Instagram may revoke access at any time</li>
-              <li>• You are responsible for compliance with Instagram's rate limits and policies</li>
-              <li>• We are not responsible for changes to Instagram's API or policies</li>
+              <li>• You are responsible for compliance with Instagram&#39;s rate limits and policies</li>
+              <li>• We are not responsible for changes to Instagram&#39;s API or policies</li>
             </ul>
           </section>
 
@@ -169,7 +169,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold mb-2">8.1 Service Availability</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  The Service is provided "as is" and "as available" without warranties of any kind. We do not 
+                  The Service is provided &#34;as is&#34; and &#34;as available&#34; without warranties of any kind. We do not 
                   guarantee that the Service will be uninterrupted, secure, or error-free.
                 </p>
               </div>
