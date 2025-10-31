@@ -4,7 +4,7 @@ import { HelpDuoToneBlue } from '@/icons'
 import { 
   Message, 
   FileText, 
-  VideoRecorder, 
+  Video, 
   Globe,
   Mail,
   MessageSquare
@@ -48,7 +48,7 @@ const Page = (props: Props) => {
       action: "View Docs"
     },
     {
-      icon: <VideoRecorder className="w-6 h-6" />,
+      icon: <Video className="w-6 h-6" />,
       title: "Video Tutorials",
       description: "Learn with step-by-step video guides",
       action: "Watch Videos"
