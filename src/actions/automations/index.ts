@@ -7,6 +7,7 @@ import {
   addListener,
   addPost,
   addTrigger,
+  cloneAutomation as cloneAutomationQuery,
   createAutomation,
   deleteKeywordQuery,
   findAutomation,
@@ -173,6 +174,32 @@ export const activateAutomation = async (id: string, state: boolean) => {
       }
     return { status: 404, data: 'Automation not found' }
   } catch (error) {
+    return { status: 500, data: 'Oops! something went wrong' }
+  }
+}
+
+export const duplicateAutomation = async (automationId: string) => {
+  const user = await onCurrentUser()
+  try {
+    // Get the database user to get the UUID
+    const dbUser = await findUser(user.id)
+    if (!dbUser) {
+      return { status: 404, data: 'User not found' }
+    }
+    
+    const cloned = await cloneAutomationQuery(automationId, dbUser.id)
+    
+    if (cloned) {
+      return {
+        status: 200,
+        data: 'Automation duplicated successfully',
+        automation: cloned,
+      }
+    }
+    
+    return { status: 404, data: 'Automation not found' }
+  } catch (error) {
+    console.error('Error duplicating automation:', error)
     return { status: 500, data: 'Oops! something went wrong' }
   }
 }

@@ -7,9 +7,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CheckCircle, MenuIcon } from 'lucide-react'
+import { CheckCircle, Sparkles, Zap, TrendingUp } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { LogoSmall } from '@/svgs/logo-small'
 
 export default function Home() {
   const plans = [
@@ -23,6 +24,7 @@ export default function Home() {
         'Turn followers into customers with targeted messaging',
       ],
       cta: 'Get Started',
+      popular: false,
     },
     {
       name: 'Smart AI Plan',
@@ -36,106 +38,207 @@ export default function Home() {
         'Custom branding options',
       ],
       cta: 'Upgrade Now',
+      popular: true,
     },
   ]
+  
   return (
-    <main>
-      <section className="relative bg-gradient-to-b from-slate-900 via-blue-900 to-bg">
+    <main className="scroll-smooth">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-b from-slate-900 via-blue-900 to-slate-800 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
+        
+        {/* Animated gradient orbs */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        
         <div className="relative">
-          <div className="container px-4 py-8">
+          <div className="container px-4 py-6 md:py-8">
+            {/* Navigation */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center font-bold">
-                  li
-                </div>
-                <span className="text-xl font-semibold text-primary-foreground">
-                  Slide
-                </span>
-              </div>
-              <nav className="hidden space-x-6 text-sm text-blue-200 md:block">
-                <Link href="#features">Features</Link>
-                <Link href="#pricing">Pricing</Link>
-                <Link href="#about">About</Link>
+              <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
+                <LogoSmall />
+              </Link>
+              <nav className="hidden space-x-8 text-sm text-blue-200 md:flex">
+                <Link href="#features" className="transition-colors hover:text-white">
+                  Features
+                </Link>
+                <Link href="#pricing" className="transition-colors hover:text-white">
+                  Pricing
+                </Link>
+                <Link href="#about" className="transition-colors hover:text-white">
+                  About
+                </Link>
               </nav>
-              <Button className="bg-white text-primary">
+              <Button asChild className="bg-blue-800 text-blue-100 hover:bg-blue-700 hover:text-white transition-all hover:scale-105">
                 <Link href="/dashboard">Login</Link>
               </Button>
             </div>
 
-            <div className="mx-auto mt-16 max-w-3xl text-center">
+            {/* Hero Content */}
+            <div className="mx-auto mt-16 md:mt-24 max-w-4xl text-center pb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm text-blue-200 bg-blue-900/50 rounded-full border border-blue-700/50 backdrop-blur-sm">
+                <Sparkles className="w-4 h-4" />
+                <span>Transform Your Instagram Engagement</span>
+              </div>
+              
               <h1 className="text-4xl font-bold leading-tight tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                Transform Your Instagram Engagement with Slide
+                Automate & Amplify Your{' '}
+                <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  Instagram Success
+                </span>
               </h1>
 
-              <p className="mt-6 text-lg text-blue-200">
+              <p className="mt-6 text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
                 Slide revolutionizes how you connect with your audience on
                 Instagram. Automate responses and boost engagement effortlessly,
                 turning interactions into valuable business opportunities.
               </p>
 
-              <div className="mt-8 flex justify-center gap-4">
+              <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
                 <Button
+                  asChild
                   size="lg"
-                  className="bg-blue-600 text-white hover:bg-blue-700"
+                  className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/50"
                 >
-                  Get Started
+                  <Link href="/dashboard">
+                    Get Started Free
+                    <Zap className="ml-2 w-4 h-4" />
+                  </Link>
                 </Button>
                 <Button
+                  asChild
                   size="lg"
                   variant="outline"
-                  className="border-blue-400  hover:bg-blue-900/50"
+                  className="w-full sm:w-auto border-blue-400 text-blue-200 hover:bg-blue-900/50 hover:text-white transition-all"
                 >
-                  Learn More
+                  <Link href="#pricing">View Pricing</Link>
                 </Button>
               </div>
+
+              {/* Stats */}
+              <div className="mt-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-white">10K+</div>
+                  <div className="text-sm text-blue-300 mt-1">Active Users</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-white">5M+</div>
+                  <div className="text-sm text-blue-300 mt-1">Messages Sent</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-white">98%</div>
+                  <div className="text-sm text-blue-300 mt-1">Satisfaction</div>
+                </div>
+              </div>
             </div>
-            <div className="relative h-40 md:h-80 w-full  mt-10">
+
+            {/* Hero Image */}
+            <div className="relative h-48 md:h-96 w-full max-w-5xl mx-auto mt-8 rounded-xl overflow-hidden shadow-2xl border border-blue-700/50">
               <Image
                 src="/Ig-creators.png"
-                alt="Community member"
+                alt="Instagram creators using Slide"
                 fill
                 className="object-cover"
+                priority
               />
             </div>
           </div>
         </div>
       </section>
-      <section className="container w-full py-12 md:py-24 lg:py-32 bg-background">
+
+      {/* Features Section */}
+      <section id="features" className="py-16 md:py-24 bg-background">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-col items-center justify-center space-y-4 text-center">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Why Choose Slide?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Powerful features designed to help you grow your Instagram presence
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="group p-6 rounded-lg border bg-card hover:shadow-lg transition-all hover:scale-105">
+              <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4 group-hover:bg-blue-500/20 transition-colors">
+                <Zap className="w-6 h-6 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
+              <p className="text-muted-foreground">
+                Automate your Instagram responses in seconds with our intelligent system
+              </p>
+            </div>
+            
+            <div className="group p-6 rounded-lg border bg-card hover:shadow-lg transition-all hover:scale-105">
+              <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
+                <Sparkles className="w-6 h-6 text-purple-500" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">AI-Powered</h3>
+              <p className="text-muted-foreground">
+                Smart AI generates contextual responses that feel natural and engaging
+              </p>
+            </div>
+            
+            <div className="group p-6 rounded-lg border bg-card hover:shadow-lg transition-all hover:scale-105">
+              <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
+                <TrendingUp className="w-6 h-6 text-green-500" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Grow Faster</h3>
+              <p className="text-muted-foreground">
+                Turn engagement into conversions with targeted messaging strategies
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-16 md:py-24 bg-slate-50 dark:bg-slate-950">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tighter">
               Choose Your Plan
             </h2>
-            <p className="max-w-[900px] text-muted-foreground">
+            <p className="max-w-[900px] text-muted-foreground text-lg">
               Select the perfect plan to boost your Instagram engagement
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2 md:gap-8">
+          
+          <div className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2 md:gap-8 max-w-5xl mx-auto">
             {plans.map((plan, index) => (
               <Card
                 key={index}
-                className="flex flex-col justify-between"
+                className={`flex flex-col justify-between transition-all hover:shadow-xl ${
+                  plan.popular 
+                    ? 'border-2 border-blue-500 relative scale-105 shadow-lg' 
+                    : 'hover:scale-105'
+                }`}
               >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-500 text-white text-sm font-semibold rounded-full">
+                    Most Popular
+                  </div>
+                )}
                 <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription className="text-base">{plan.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className="text-4xl font-bold">
-                    {plan.price}
+                <CardContent className="grid gap-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-5xl font-bold">{plan.price}</span>
                     <span className="text-lg font-normal text-muted-foreground">
                       /month
                     </span>
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-3">
                     {plan.features.map((feature, i) => (
                       <li
                         key={i}
-                        className="flex items-center"
+                        className="flex items-start gap-2"
                       >
-                        <CheckCircle className="mr-2 h-4 w-4 text-primary" />
-                        <span className="text-sm text-muted-foreground">
+                        <CheckCircle className="mt-0.5 h-5 w-5 text-green-500 shrink-0" />
+                        <span className="text-sm leading-relaxed">
                           {feature}
                         </span>
                       </li>
@@ -143,13 +246,60 @@ export default function Home() {
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">{plan.cta}</Button>
+                  <Button 
+                    asChild
+                    className={`w-full transition-all ${
+                      plan.popular 
+                        ? 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg' 
+                        : ''
+                    }`}
+                  >
+                    <Link href="/dashboard">{plan.cta}</Link>
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="border-t bg-background">
+        <div className="container px-4 py-8 md:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <LogoSmall />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs">
+                Transform your Instagram engagement with automated responses and AI-powered messaging.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-3">Product</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="#features" className="hover:text-foreground transition-colors">Features</Link></li>
+                <li><Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
+                <li><Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-3">Company</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
+                <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link></li>
+                <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
+            <p>&copy; {new Date().getFullYear()} Slide. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </main>
   )
 }

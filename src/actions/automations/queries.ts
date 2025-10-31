@@ -165,3 +165,74 @@ export const addPost = async (
     },
   })
 }
+
+export const cloneAutomation = async (automationId: string, userId: string) => {
+  // Fetch the original automation with all related data
+  const original = await client.automation.findUnique({
+    where: { id: automationId },
+    include: {
+      keywords: true,
+      trigger: true,
+      posts: true,
+      listener: true,
+    },
+  })
+
+  if (!original) {
+    return null
+  }
+
+  // Create new automation with cloned data
+  const cloned = await client.automation.create({
+    data: {
+      name: `${original.name} (Copy)`,
+      active: false, // Clone starts as inactive for safety
+      userId: userId,
+      // Clone triggers
+      trigger: {
+        createMany: {
+          data: original.trigger.map((t) => ({
+            type: t.type,
+          })),
+        },
+      },
+      // Clone keywords
+      keywords: {
+        createMany: {
+          data: original.keywords.map((k) => ({
+            word: k.word,
+          })),
+        },
+      },
+      // Clone listener if exists
+      ...(original.listener && {
+        listener: {
+          create: {
+            listener: original.listener.listener,
+            prompt: original.listener.prompt,
+            commentReply: original.listener.commentReply,
+          },
+        },
+      }),
+      // Clone posts
+      posts: {
+        createMany: {
+          data: original.posts.map((p) => ({
+            postid: p.postid,
+            caption: p.caption,
+            media: p.media,
+            mediaType: p.mediaType,
+          })),
+        },
+      },
+    },
+    include: {
+      keywords: true,
+      listener: true,
+      trigger: true,
+      posts: true,
+    },
+  })
+
+  return cloned
+}
