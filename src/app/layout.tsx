@@ -14,19 +14,6 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Slide - Instagram Automation Platform',
   description: 'Transform your Instagram engagement with AI-powered automation. Automate DMs and comments effortlessly.',
-  icons: {
-    icon: [
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-      {
-        url: '/slide-logo.svg',
-        type: 'image/svg+xml',
-      }
-    ],
-    apple: '/icon.svg',
-  },
 }
 
 export default function RootLayout({
