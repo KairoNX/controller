@@ -13,6 +13,43 @@ import Link from 'next/link'
 import { LogoSmall } from '@/svgs/logo-small'
 
 export default function Home() {
+  // Structured data for SEO
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Zenus',
+    description: 'Instagram Automation Platform with AI-powered engagement tools',
+    url: 'https://zenus.space',
+    logo: 'https://zenus.space/zenus-logo-full.png',
+    sameAs: [
+      'https://twitter.com/ZenusSpace',
+      'https://discord.gg/zenus'
+    ],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: 'support@zenus.space',
+      contactType: 'Customer Support'
+    }
+  }
+
+  const softwareApplicationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'Zenus',
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD'
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      ratingCount: '1000'
+    }
+  }
+
   const plans = [
     {
       name: 'Free Plan',
@@ -43,9 +80,20 @@ export default function Home() {
   ]
   
   return (
-    <main className="scroll-smooth">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-slate-900 via-blue-900 to-slate-800 overflow-hidden">
+    <>
+      {/* Structured Data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationSchema) }}
+      />
+      
+      <main className="scroll-smooth">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-b from-slate-900 via-blue-900 to-slate-800 overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
         
         {/* Animated gradient orbs */}
@@ -90,7 +138,7 @@ export default function Home() {
               </h1>
 
               <p className="mt-6 text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
-                Slide revolutionizes how you connect with your audience on
+                Zenus revolutionizes how you connect with your audience on
                 Instagram. Automate responses and boost engagement effortlessly,
                 turning interactions into valuable business opportunities.
               </p>
@@ -137,7 +185,7 @@ export default function Home() {
             <div className="relative h-48 md:h-96 w-full max-w-5xl mx-auto mt-8 rounded-xl overflow-hidden shadow-2xl border border-blue-700/50">
               <Image
                 src="/Ig-creators.png"
-                alt="Instagram creators using Slide"
+                alt="Instagram creators using Zenus"
                 fill
                 className="object-cover"
                 priority
@@ -152,7 +200,7 @@ export default function Home() {
         <div className="container px-4 md:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose Slide?
+              Why Choose Zenus?
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Powerful features designed to help you grow your Instagram presence
@@ -296,10 +344,11 @@ export default function Home() {
           </div>
           
           <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Slide. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Zenus. All rights reserved.</p>
           </div>
         </div>
       </footer>
-    </main>
+      </main>
+    </>
   )
 }

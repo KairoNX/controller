@@ -2,6 +2,12 @@ import { LogoSmall } from '@/svgs/logo-small'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy - Zenus',
+  description: 'Read Zenus Privacy Policy. Learn how we protect your data and privacy when using our Instagram automation platform.',
+}
 
 export default function PrivacyPage() {
   return (
@@ -32,7 +38,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">Introduction</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Welcome to Slide. We respect your privacy and are committed to protecting your personal data. 
+              Welcome to Zenus. We respect your privacy and are committed to protecting your personal data. 
               This privacy policy will inform you about how we look after your personal data when you visit 
               our website and use our services, and tell you about your privacy rights and how the law protects you.
             </p>
@@ -153,7 +159,7 @@ export default function PrivacyPage() {
               <li>• Lodge a complaint with a supervisory authority</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed mt-4">
-              To exercise these rights, please contact us at privacy@slide.com
+              To exercise these rights, please contact us at privacy@zenus.space
             </p>
           </section>
 
@@ -198,7 +204,7 @@ export default function PrivacyPage() {
               If you have any questions about this privacy policy or our data practices, please contact us at:
             </p>
             <div className="mt-4 p-6 border rounded-lg">
-              <p className="text-muted-foreground">Email: privacy@slide.com</p>
+              <p className="text-muted-foreground">Email: privacy@zenus.space</p>
               <p className="text-muted-foreground">Address: [Your Company Address]</p>
             </div>
           </section>
@@ -209,7 +215,7 @@ export default function PrivacyPage() {
       <footer className="border-t bg-background mt-12">
         <div className="container px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Slide. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Zenus. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/about" className="hover:text-foreground transition-colors">
                 About

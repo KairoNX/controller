@@ -1,0 +1,21 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://zenus.space/sitemap.xml
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Block admin and private areas
+Disallow: /dashboard/
+Disallow: /api/webhook/
+Disallow: /callback/
+

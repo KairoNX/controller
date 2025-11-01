@@ -35,7 +35,7 @@ const getSmartResponse = (userMessage: string): string => {
   }
   
   if (msg.includes('help') || msg.includes('support') || msg.includes('contact')) {
-    return "I'm here to help! 📞 You can message us right here, or email us at support@slide.com. Our response time is usually under 2 hours. What do you need help with?"
+    return "I'm here to help! 📞 You can message us right here, or email us at support@zenus.space. Our response time is usually under 2 hours. What do you need help with?"
   }
   
   if (msg.includes('instagram') || msg.includes('ig') || msg.includes('connect')) {
@@ -54,7 +54,7 @@ const CustomChatWidget = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hey there! Welcome to Slide Support 😊 What can we help you with today?',
+      text: 'Hey there! Welcome to Zenus Support 😊 What can we help you with today?',
       sender: 'agent',
       timestamp: new Date(),
     },
@@ -167,7 +167,7 @@ const CustomChatWidget = () => {
               </div>
               <div>
                 <h3 className="font-semibold flex items-center gap-1">
-                  Slide Support
+                  Zenus Support
                   <Sparkles className="h-3 w-3" />
                 </h3>
                 <p className="text-xs text-blue-100 flex items-center gap-1">
@@ -271,7 +271,7 @@ const CustomChatWidget = () => {
               </button>
             </div>
             <p className="text-xs text-center text-muted-foreground mt-2">
-              Powered by Slide AI ✨
+              Powered by Zenus AI ✨
             </p>
           </div>
         </div>

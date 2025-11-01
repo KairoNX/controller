@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🎯 Slide - Instagram Automation Platform</h1>
+  <h1>🎯 Zenus - Instagram Automation Platform</h1>
   <p><strong>Transform Your Instagram Engagement with AI-Powered Automation</strong></p>
   
   <p>
@@ -21,9 +21,9 @@
 
 ## 📖 About
 
-**Slide** is a powerful Instagram automation platform that revolutionizes how you connect with your audience. Automate DM responses, reply to comments intelligently, and boost engagement effortlessly - turning interactions into valuable business opportunities.
+**Zenus** is a powerful Instagram automation platform that revolutionizes how you connect with your audience. Automate DM responses, reply to comments intelligently, and boost engagement effortlessly - turning interactions into valuable business opportunities.
 
-Built with modern web technologies, Slide provides a seamless experience for content creators, businesses, and influencers looking to scale their Instagram presence without sacrificing the personal touch.
+Built with modern web technologies, Zenus provides a seamless experience for content creators, businesses, and influencers looking to scale their Instagram presence without sacrificing the personal touch.
 
 ---
 
@@ -106,7 +106,7 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 # Database
-DATABASE_URL="postgresql://user:password@localhost:5432/slide"
+DATABASE_URL="postgresql://user:password@localhost:5432/zenus"
 
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxxxx
@@ -131,6 +131,9 @@ STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Domain
+NEXT_PUBLIC_APP_DOMAIN=zenus.space
 ```
 
 ### Installation
@@ -290,9 +293,9 @@ This project is licensed under the MIT License.
 
 Need help? Have questions?
 
-- 📧 Email: support@slide.com
-- 🐦 Twitter: [@SlideApp](https://twitter.com/SlideApp)
-- 💬 Discord: [Join our community](https://discord.gg/slide)
+- 📧 Email: support@zenus.space
+- 🐦 Twitter: [@ZenusSpace](https://twitter.com/ZenusSpace)
+- 💬 Discord: [Join our community](https://discord.gg/zenus)
 
 ---
 

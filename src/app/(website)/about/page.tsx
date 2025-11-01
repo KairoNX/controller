@@ -2,6 +2,13 @@ import { LogoSmall } from '@/svgs/logo-small'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'About Zenus - Instagram Automation Platform',
+  description: 'Learn about Zenus, the AI-powered Instagram automation platform helping creators and businesses grow their engagement. Discover our mission and technology.',
+  keywords: ['about zenus', 'instagram automation company', 'ai instagram platform'],
+}
 
 export default function AboutPage() {
   return (
@@ -25,7 +32,7 @@ export default function AboutPage() {
 
       {/* Content */}
       <div className="container px-4 py-12 md:py-20 max-w-4xl">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">About Slide</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-6">About Zenus</h1>
         
         <div className="prose prose-neutral dark:prose-invert max-w-none">
           <p className="text-xl text-muted-foreground mb-8">
@@ -35,7 +42,7 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
             <p className="text-muted-foreground leading-relaxed">
-              At Slide, we believe that meaningful connections drive business success. Our mission is to empower content creators, 
+              At Zenus, we believe that meaningful connections drive business success. Our mission is to empower content creators, 
               businesses, and influencers to scale their Instagram presence without sacrificing the personal touch that makes 
               social media special.
             </p>
@@ -44,7 +51,7 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">What We Do</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Slide is a powerful Instagram automation platform that revolutionizes how you connect with your audience. 
+              Zenus is a powerful Instagram automation platform that revolutionizes how you connect with your audience. 
               We help you:
             </p>
             <ul className="space-y-3 text-muted-foreground">
@@ -72,7 +79,7 @@ export default function AboutPage() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold mb-4">Why Choose Slide?</h2>
+            <h2 className="text-2xl font-semibold mb-4">Why Choose Zenus?</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="p-6 border rounded-lg">
                 <h3 className="font-semibold mb-2">Lightning Fast</h3>
@@ -104,7 +111,7 @@ export default function AboutPage() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Our Technology</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Built with modern web technologies including Next.js, TypeScript, and OpenAI, Slide provides 
+              Built with modern web technologies including Next.js, TypeScript, and OpenAI, Zenus provides 
               a seamless experience that&#39;s both powerful and easy to use. We leverage cutting-edge AI to understand 
               context and generate appropriate responses, while our robust infrastructure ensures your automations 
               run smoothly 24/7.
@@ -128,7 +135,7 @@ export default function AboutPage() {
               </div>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              From solopreneurs to large agencies, thousands of users trust Slide to manage their Instagram 
+              From solopreneurs to large agencies, thousands of users trust Zenus to manage their Instagram 
               engagement. Join them today and see the difference automation can make for your business.
             </p>
           </section>
@@ -151,7 +158,7 @@ export default function AboutPage() {
       <footer className="border-t bg-background mt-12">
         <div className="container px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Slide. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Zenus. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/about" className="hover:text-foreground transition-colors">
                 About

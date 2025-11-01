@@ -14,19 +14,26 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 24,
-          background: '#1a1a2e',
+          background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#AABBFF',
-          fontWeight: 'bold',
           borderRadius: '8px',
         }}
       >
-        S
+        <div
+          style={{
+            color: 'white',
+            fontSize: 18,
+            fontWeight: 'bold',
+            fontFamily: 'system-ui',
+            letterSpacing: '-0.05em',
+          }}
+        >
+          Z
+        </div>
       </div>
     ),
     {
@@ -34,4 +41,5 @@ export default function Icon() {
     }
   )
 }
+
 

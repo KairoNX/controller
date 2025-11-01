@@ -1,0 +1,17 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- App icon with modern Z -->
+  <rect width="120" height="120" rx="26" fill="url(#zenusIconGradient)"/>
+  <path d="M35 35L35 55L85 55L35 85L35 90L105 90L105 70L55 70L105 40L105 35L35 35Z" fill="white" opacity="0.95"/>
+  
+  <!-- Small accent -->
+  <circle cx="95" cy="30" r="3" fill="white" opacity="0.6"/>
+  
+  <!-- Gradient -->
+  <defs>
+    <linearGradient id="zenusIconGradient" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+</svg>
+

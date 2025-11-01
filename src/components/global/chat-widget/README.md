@@ -1,6 +1,6 @@
 # Chat Widget Integration Guide
 
-This directory contains two chat widget implementations for Slide:
+This directory contains two chat widget implementations for Zenus:
 
 ## 1. Custom Chat Widget (Currently Active) ✅
 
@@ -10,7 +10,7 @@ A beautiful, custom-built chat widget that's already integrated into your app.
 
 ### Features:
 - 💬 Floating chat button in bottom-right corner
-- 🎨 Matches your Slide branding
+- 🎨 Matches your Zenus branding
 - 📱 Fully responsive
 - 🌙 Dark mode support
 - ⚡ No external dependencies (free!)
@@ -130,7 +130,7 @@ Create API endpoints in `src/app/api/chat/` to handle messages.
 
 ✅ Custom chat widget is active and working
 📍 Located in bottom-right corner
-🎨 Styled to match Slide branding
+🎨 Styled to match Zenus branding
 💬 Ready to receive messages (currently simulated)
 
 To connect to a real backend, modify `custom-chat-widget.tsx` to send messages to your API or use one of the third-party services above.

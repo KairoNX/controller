@@ -2,6 +2,12 @@ import { LogoSmall } from '@/svgs/logo-small'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Terms of Service - Zenus',
+  description: 'Read Zenus Terms of Service. Understand your rights and responsibilities when using our Instagram automation platform.',
+}
 
 export default function TermsPage() {
   return (
@@ -32,7 +38,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">1. Acceptance of Terms</h2>
             <p className="text-muted-foreground leading-relaxed">
-              By accessing and using Slide (&#34;the Service&#34;), you accept and agree to be bound by these Terms of Service 
+              By accessing and using Zenus (&#34;the Service&#34;), you accept and agree to be bound by these Terms of Service 
               (&#34;Terms&#34;). If you do not agree to these Terms, please do not use the Service. We reserve the right to 
               modify these Terms at any time, and your continued use of the Service constitutes acceptance of any changes.
             </p>
@@ -41,7 +47,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">2. Description of Service</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Slide provides Instagram automation tools that allow users to automate direct messages, comment replies, 
+              Zenus provides Instagram automation tools that allow users to automate direct messages, comment replies, 
               and engagement activities. The Service includes AI-powered response generation, keyword triggers, and 
               analytics features. We reserve the right to modify, suspend, or discontinue any part of the Service at 
               any time.
@@ -149,7 +155,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold mb-2">7.1 Our Rights</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  The Service and its original content, features, and functionality are owned by Slide and are 
+                  The Service and its original content, features, and functionality are owned by Zenus and are 
                   protected by international copyright, trademark, and other intellectual property laws.
                 </p>
               </div>
@@ -176,7 +182,7 @@ export default function TermsPage() {
               <div>
                 <h3 className="font-semibold mb-2">8.2 Limitation of Liability</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  To the maximum extent permitted by law, Slide shall not be liable for any indirect, incidental, 
+                  To the maximum extent permitted by law, Zenus shall not be liable for any indirect, incidental, 
                   special, consequential, or punitive damages resulting from your use of or inability to use the Service.
                 </p>
               </div>
@@ -193,7 +199,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-semibold mb-4">9. Indemnification</h2>
             <p className="text-muted-foreground leading-relaxed">
-              You agree to indemnify and hold harmless Slide and its officers, directors, employees, and agents from 
+              You agree to indemnify and hold harmless Zenus and its officers, directors, employees, and agents from 
               any claims, damages, losses, liabilities, and expenses arising out of your use of the Service, violation 
               of these Terms, or violation of any rights of another party.
             </p>
@@ -246,7 +252,7 @@ export default function TermsPage() {
               If you have any questions about these Terms, please contact us at:
             </p>
             <div className="mt-4 p-6 border rounded-lg">
-              <p className="text-muted-foreground">Email: legal@slide.com</p>
+              <p className="text-muted-foreground">Email: legal@zenus.space</p>
               <p className="text-muted-foreground">Address: [Your Company Address]</p>
             </div>
           </section>
@@ -254,7 +260,7 @@ export default function TermsPage() {
           <section className="bg-amber-50 dark:bg-amber-950 p-6 rounded-lg border border-amber-200 dark:border-amber-800">
             <h3 className="font-semibold mb-2 text-amber-900 dark:text-amber-100">Important Notice</h3>
             <p className="text-sm text-amber-800 dark:text-amber-200">
-              By using Slide, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. 
+              By using Zenus, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. 
               If you do not agree to these Terms, you must not use the Service.
             </p>
           </section>
@@ -265,7 +271,7 @@ export default function TermsPage() {
       <footer className="border-t bg-background mt-12">
         <div className="container px-4 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} Slide. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Zenus. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/about" className="hover:text-foreground transition-colors">
                 About
