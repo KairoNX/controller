@@ -156,16 +156,62 @@ export const getProfilePosts = async () => {
   const user = await onCurrentUser()
   try {
     const profile = await findUser(user.id)
-    const posts = await fetch(
-      `${process.env.INSTAGRAM_BASE_URL}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile?.integrations[0].token}`
+    
+    // Check if user exists
+    if (!profile) {
+      console.log('🔴 Error: User profile not found')
+      return { status: 404, data: null }
+    }
+    
+    // Check if user has Instagram integration
+    if (!profile.integrations || profile.integrations.length === 0) {
+      console.log('🔴 Error: No Instagram integration found')
+      return { status: 404, data: { data: [] } }
+    }
+    
+    // Check if token exists
+    if (!profile.integrations[0].token) {
+      console.log('🔴 Error: Instagram token not found')
+      return { status: 401, data: { data: [] } }
+    }
+    
+    const instagramBaseUrl = process.env.INSTAGRAM_BASE_URL
+    if (!instagramBaseUrl) {
+      console.log('🔴 Error: INSTAGRAM_BASE_URL not configured')
+      return { status: 500, data: { data: [] } }
+    }
+    
+    // Fetch posts from Instagram API
+    const postsResponse = await fetch(
+      `${instagramBaseUrl}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile.integrations[0].token}`
     )
-    const parsed = await posts.json()
-    if (parsed) return { status: 200, data: parsed }
-    console.log('🔴 Error in getting posts')
-    return { status: 404 }
-  } catch (error) {
-    console.log('🔴 server side Error in getting posts ', error)
-    return { status: 500 }
+    
+    // Check HTTP response status
+    if (!postsResponse.ok) {
+      const errorData = await postsResponse.json().catch(() => ({}))
+      console.log('🔴 Error fetching Instagram posts:', postsResponse.status, errorData)
+      return { status: postsResponse.status, data: { data: [] } }
+    }
+    
+    const parsed = await postsResponse.json()
+    
+    // Check if Instagram API returned an error
+    if (parsed.error) {
+      console.log('🔴 Instagram API error:', parsed.error)
+      return { status: 400, data: { data: [] } }
+    }
+    
+    // Instagram API returns { data: [...] }, ensure we return it correctly
+    if (parsed && parsed.data && Array.isArray(parsed.data)) {
+      return { status: 200, data: parsed }
+    }
+    
+    // If no data array, return empty array
+    console.log('🔴 Warning: Instagram API returned unexpected format:', parsed)
+    return { status: 200, data: { data: [] } }
+  } catch (error: any) {
+    console.log('🔴 server side Error in getting posts:', error?.message || error)
+    return { status: 500, data: { data: [] } }
   }
 }
 
