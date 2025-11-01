@@ -39,21 +39,34 @@ export const sendDM = async (
     messagePayload.quick_replies = validButtons
   }
 
-  return await axios.post(
-    `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
-    {
-      recipient: {
-        id: recieverId,
+  try {
+    return await axios.post(
+      `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
+      {
+        recipient: {
+          id: recieverId,
+        },
+        message: messagePayload,
       },
-      message: messagePayload,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+  } catch (error: any) {
+    // Log detailed error information for debugging
+    if (error.response) {
+      console.error('[sendDM] Instagram API Error:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        url: error.config?.url,
+      })
     }
-  )
+    throw error
+  }
 }
 
 export const sendPrivateMessage = async (

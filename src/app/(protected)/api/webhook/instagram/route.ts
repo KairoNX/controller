@@ -37,6 +37,13 @@ export async function POST(req: NextRequest) {
     webhook_payload = await req.json()
     console.log('[Instagram Webhook] Payload received:', JSON.stringify(webhook_payload, null, 2))
 
+    // CRITICAL: Check for echo messages FIRST, before any processing
+    const echoMessage = webhook_payload.entry?.[0]?.messaging?.[0]?.message
+    if (echoMessage?.is_echo === true || echoMessage?.is_echo === 'true' || echoMessage?.is_echo === 1) {
+      console.log('[Instagram Webhook] ❌ ECHO MESSAGE DETECTED - Ignoring immediately. is_echo:', echoMessage.is_echo, 'type:', typeof echoMessage.is_echo)
+      return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+    }
+
     // Validate webhook payload structure
     if (!webhook_payload || !webhook_payload.entry || !Array.isArray(webhook_payload.entry) || webhook_payload.entry.length === 0) {
       console.error('[Instagram Webhook] Invalid payload structure - missing or empty entry array')
@@ -53,6 +60,13 @@ export async function POST(req: NextRequest) {
 
     // Handle messaging (DMs)
     if (webhook_payload.entry[0].messaging) {
+      // Skip echo messages (messages sent by the page itself)
+      const isEcho = webhook_payload.entry[0].messaging[0]?.message?.is_echo
+      if (isEcho === true || isEcho === 'true') {
+        console.log('[Instagram Webhook] Skipping echo message (sent by page itself)')
+        return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+      }
+
       try {
         const messageText = webhook_payload.entry[0].messaging[0]?.message?.text
         if (!messageText) {
@@ -90,6 +104,13 @@ export async function POST(req: NextRequest) {
       
       // We have a keyword matcher
       if (webhook_payload.entry[0].messaging) {
+        // Double-check for echo messages before processing
+        const isEchoMessage = webhook_payload.entry[0].messaging[0]?.message?.is_echo
+        if (isEchoMessage === true || isEchoMessage === 'true') {
+          console.log('[Instagram Webhook] Skipping echo message - already processed by page')
+          return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+        }
+
         console.log('[Instagram Webhook] Processing DM/webhook messaging')
         
         let automation
