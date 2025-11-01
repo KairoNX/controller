@@ -37,11 +37,19 @@ export async function POST(req: NextRequest) {
     webhook_payload = await req.json()
     console.log('[Instagram Webhook] Payload received:', JSON.stringify(webhook_payload, null, 2))
 
-    // CRITICAL: Check for echo messages FIRST, before any processing
-    const echoMessage = webhook_payload.entry?.[0]?.messaging?.[0]?.message
-    if (echoMessage?.is_echo === true || echoMessage?.is_echo === 'true' || echoMessage?.is_echo === 1) {
-      console.log('[Instagram Webhook] ❌ ECHO MESSAGE DETECTED - Ignoring immediately. is_echo:', echoMessage.is_echo, 'type:', typeof echoMessage.is_echo)
+    // CRITICAL: Check for echo messages and message_edit events FIRST, before any processing
+    const messaging = webhook_payload.entry?.[0]?.messaging?.[0]
+    
+    // Skip echo messages (messages sent by the page itself)
+    if (messaging?.message?.is_echo === true || messaging?.message?.is_echo === 'true' || messaging?.message?.is_echo === 1) {
+      console.log('[Instagram Webhook] ❌ ECHO MESSAGE DETECTED - Ignoring immediately. is_echo:', messaging.message.is_echo, 'type:', typeof messaging.message.is_echo)
       return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+    }
+
+    // Skip message_edit events (they're not actual messages, just edit metadata)
+    if (messaging?.message_edit) {
+      console.log('[Instagram Webhook] Skipping message_edit event (not a message)')
+      return NextResponse.json({ message: 'Message edit event ignored' }, { status: 200 })
     }
 
     // Validate webhook payload structure
@@ -599,18 +607,33 @@ export async function POST(req: NextRequest) {
       }
 
       try {
+        // Only check history if there's an actual message (not message_edit or other event types)
+        const messageText = webhook_payload.entry[0].messaging[0]?.message?.text
+        if (!messageText) {
+          console.log('[Instagram Webhook] No message text available, skipping conversation history check')
+          return NextResponse.json({ message: 'No automation set' }, { status: 200 })
+        }
+
         const customer_history = await getChatHistory(
           webhook_payload.entry[0].messaging[0].recipient.id,
           webhook_payload.entry[0].messaging[0].sender.id
-        )
-
-        console.log('[Instagram Webhook] Chat history found:', {
-          hasHistory: customer_history.history.length > 0,
-          historyLength: customer_history.history.length,
-          automationId: customer_history.automationId
+        ).catch((error: any) => {
+          console.error('[Instagram Webhook] Error fetching chat history:', error?.message || error)
+          return null
         })
 
-        if (customer_history.history.length > 0 && customer_history.automationId) {
+        if (!customer_history) {
+          console.log('[Instagram Webhook] No chat history found')
+          return NextResponse.json({ message: 'No automation set' }, { status: 200 })
+        }
+
+        console.log('[Instagram Webhook] Chat history found:', {
+          hasHistory: customer_history?.history?.length > 0,
+          historyLength: customer_history?.history?.length || 0,
+          automationId: customer_history?.automationId
+        })
+
+        if (customer_history && customer_history.history && customer_history.history.length > 0 && customer_history.automationId) {
           try {
             const automation = await findAutomation(customer_history.automationId)
 
