@@ -1,6 +1,6 @@
 'use client'
 import { usePaths } from '@/hooks/user-nav'
-import { cn, getMonth } from '@/lib/utils'
+import { cn, formatDateWithOrdinal } from '@/lib/utils'
 import Link from 'next/link'
 import React, { useMemo } from 'react'
 import GradientButton from '../gradient-button'
@@ -51,9 +51,17 @@ const AutomationList = (props: Props) => {
             className="flex"
           >
             <div className="flex flex-col flex-1 items-start">
-              <h2 className="text-xl font-semibold">{automation.name}</h2>
+              <h2 className="text-xl font-semibold">
+                {automation.name || 'Untitled'}
+              </h2>
               <p className="text-[#9B9CA0] text-sm font-light mb-2">
-                This is from the comment
+                {automation.listener?.listener === 'SMARTAI'
+                  ? 'AI-powered responses'
+                  : automation.listener?.listener === 'MESSAGE'
+                  ? 'Direct message automation'
+                  : automation.listener?.listener === 'COMMENT'
+                  ? 'Comment reply automation'
+                  : 'Automation'}
               </p>
 
               {automation.keywords && Array.isArray(automation.keywords) && automation.keywords.length > 0 ? (
@@ -86,12 +94,8 @@ const AutomationList = (props: Props) => {
             </div>
             <div className="flex flex-col justify-between items-end gap-2 pr-12">
               {automation.createdAt && (
-                <p className="capitalize text-sm font-light text-[#9B9CA0]">
-                  {getMonth(automation.createdAt.getUTCMonth() + 1)}{' '}
-                  {automation.createdAt.getUTCDate() === 1
-                    ? `${automation.createdAt.getUTCDate()}st`
-                    : `${automation.createdAt.getUTCDate()}th`}{' '}
-                  {automation.createdAt.getUTCFullYear()}
+                <p className="text-sm font-light text-[#9B9CA0]">
+                  {formatDateWithOrdinal(automation.createdAt)}
                 </p>
               )}
 
@@ -110,8 +114,8 @@ const AutomationList = (props: Props) => {
             </div>
           </Link>
           <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
-            <DeleteAutomation automationId={automation.id} automationName={automation.name} />
             <CloneAutomation automationId={automation.id} />
+            <DeleteAutomation automationId={automation.id} automationName={automation.name} />
           </div>
         </div>
       ))}
