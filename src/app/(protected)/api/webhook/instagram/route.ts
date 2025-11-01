@@ -37,6 +37,21 @@ export async function POST(req: NextRequest) {
     webhook_payload = await req.json()
     console.log('[Instagram Webhook] Payload received:', JSON.stringify(webhook_payload, null, 2))
 
+    // CRITICAL: Check for echo messages and message_edit events FIRST, before any processing
+    const messaging = webhook_payload.entry?.[0]?.messaging?.[0]
+    
+    // Skip echo messages (messages sent by the page itself)
+    if (messaging?.message?.is_echo === true || messaging?.message?.is_echo === 'true' || messaging?.message?.is_echo === 1) {
+      console.log('[Instagram Webhook] ❌ ECHO MESSAGE DETECTED - Ignoring immediately. is_echo:', messaging.message.is_echo, 'type:', typeof messaging.message.is_echo)
+      return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+    }
+
+    // Skip message_edit events (they're not actual messages, just edit metadata)
+    if (messaging?.message_edit) {
+      console.log('[Instagram Webhook] Skipping message_edit event (not a message)')
+      return NextResponse.json({ message: 'Message edit event ignored' }, { status: 200 })
+    }
+
     // Validate webhook payload structure
     if (!webhook_payload || !webhook_payload.entry || !Array.isArray(webhook_payload.entry) || webhook_payload.entry.length === 0) {
       console.error('[Instagram Webhook] Invalid payload structure - missing or empty entry array')
@@ -53,6 +68,13 @@ export async function POST(req: NextRequest) {
 
     // Handle messaging (DMs)
     if (webhook_payload.entry[0].messaging) {
+      // Skip echo messages (messages sent by the page itself)
+      const isEcho = webhook_payload.entry[0].messaging[0]?.message?.is_echo
+      if (isEcho === true || isEcho === 'true') {
+        console.log('[Instagram Webhook] Skipping echo message (sent by page itself)')
+        return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+      }
+
       try {
         const message = webhook_payload.entry[0].messaging[0]?.message
         
@@ -98,6 +120,13 @@ export async function POST(req: NextRequest) {
       
       // We have a keyword matcher
       if (webhook_payload.entry[0].messaging) {
+        // Double-check for echo messages before processing
+        const isEchoMessage = webhook_payload.entry[0].messaging[0]?.message?.is_echo
+        if (isEchoMessage === true || isEchoMessage === 'true') {
+          console.log('[Instagram Webhook] Skipping echo message - already processed by page')
+          return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+        }
+
         console.log('[Instagram Webhook] Processing DM/webhook messaging')
         
         let automation
@@ -140,11 +169,19 @@ export async function POST(req: NextRequest) {
           console.log('[Instagram Webhook] Response prompt:', automation.listener.prompt?.substring(0, 100))
 
           try {
+            // Get buttons from listener (stored as Json)
+            let buttons = automation.listener.buttons 
+              ? (automation.listener.buttons as { title: string; url: string }[])
+              : []
+
+            // Product checkout feature disabled (Business automation type coming soon)
+
             const direct_message = await sendDM(
               webhook_payload.entry[0].id,
               webhook_payload.entry[0].messaging[0].sender.id,
               automation.listener.prompt,
-              automation.User.integrations[0].token
+              automation.User.integrations[0].token,
+              buttons.length > 0 ? buttons : undefined
             )
 
             console.log('[Instagram Webhook] DM send response status:', direct_message.status)
@@ -202,6 +239,7 @@ export async function POST(req: NextRequest) {
 
           let aiResponse
           try {
+            // Business automation type and product features disabled (coming soon)
             aiResponse = await generateAIResponse(
               {
                 userMessage,
@@ -259,11 +297,19 @@ export async function POST(req: NextRequest) {
               await client.$transaction([reciever, sender])
               console.log('[Instagram Webhook] Chat history saved to database')
 
+              // Get buttons from listener (stored as Json)
+              let buttons = automation.listener.buttons 
+                ? (automation.listener.buttons as { title: string; url: string }[])
+                : []
+
+              // Product checkout feature disabled (Business automation type coming soon)
+
               const direct_message = await sendDM(
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
                 aiResponse.message,
-                automation.User.integrations[0].token
+                automation.User.integrations[0].token,
+                buttons
               )
 
               console.log('[Instagram Webhook] DM send response status:', direct_message.status)
@@ -453,6 +499,7 @@ export async function POST(req: NextRequest) {
 
             let aiResponse
             try {
+              // Business automation type and product features disabled (coming soon)
               aiResponse = await generateAIResponse(
                 {
                   userMessage: commentText,
@@ -574,18 +621,33 @@ export async function POST(req: NextRequest) {
       }
 
       try {
+        // Only check history if there's an actual message (not message_edit or other event types)
+        const messageText = webhook_payload.entry[0].messaging[0]?.message?.text
+        if (!messageText) {
+          console.log('[Instagram Webhook] No message text available, skipping conversation history check')
+          return NextResponse.json({ message: 'No automation set' }, { status: 200 })
+        }
+
         const customer_history = await getChatHistory(
           webhook_payload.entry[0].messaging[0].recipient.id,
           webhook_payload.entry[0].messaging[0].sender.id
-        )
-
-        console.log('[Instagram Webhook] Chat history found:', {
-          hasHistory: customer_history.history.length > 0,
-          historyLength: customer_history.history.length,
-          automationId: customer_history.automationId
+        ).catch((error: any) => {
+          console.error('[Instagram Webhook] Error fetching chat history:', error?.message || error)
+          return null
         })
 
-        if (customer_history.history.length > 0 && customer_history.automationId) {
+        if (!customer_history) {
+          console.log('[Instagram Webhook] No chat history found')
+          return NextResponse.json({ message: 'No automation set' }, { status: 200 })
+        }
+
+        console.log('[Instagram Webhook] Chat history found:', {
+          hasHistory: customer_history?.history?.length > 0,
+          historyLength: customer_history?.history?.length || 0,
+          automationId: customer_history?.automationId
+        })
+
+        if (customer_history && customer_history.history && customer_history.history.length > 0 && customer_history.automationId) {
           try {
             const automation = await findAutomation(customer_history.automationId)
 
@@ -651,11 +713,17 @@ export async function POST(req: NextRequest) {
                       return NextResponse.json({ error: 'Instagram integration token missing' }, { status: 400 })
                     }
 
+                    // Get buttons from listener (stored as Json)
+                    const buttons = automation.listener.buttons 
+                      ? (automation.listener.buttons as { title: string; url: string }[])
+                      : undefined
+
                     const direct_message = await sendDM(
                       webhook_payload.entry[0].id,
                       webhook_payload.entry[0].messaging[0].sender.id,
                       aiResponse.message,
-                      automation.User.integrations[0].token
+                      automation.User.integrations[0].token,
+                      buttons
                     )
 
                     console.log('[Instagram Webhook] Conversation DM send response:', {

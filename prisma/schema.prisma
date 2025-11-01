@@ -23,6 +23,12 @@ model User {
   subscription Subscription?
   integrations Integrations[]
   automations  Automation[]
+  goals        Goal[]
+  alerts       PerformanceAlert[]
+  engagementSnapshots EngagementSnapshot[]
+  // Stripe integration
+  stripeAccountId String?     @unique // For future Stripe Connect
+  stripeCustomerId String?    @unique
 }
 
 model Subscription {
@@ -51,6 +57,7 @@ model Automation {
   name      String    @default("Untitled")
   createdAt DateTime  @default(now())
   active    Boolean   @default(false)
+  type      AUTOMATION_TYPE @default(CREATOR) // CREATOR or BUSINESS
   trigger   Trigger[]
   listener  Listener?
   posts     Post[]
@@ -89,6 +96,8 @@ model Listener {
   commentReply String?
   dmCount      Int                @default(0)
   commentCount Int                @default(0)
+  // DM Buttons (quick replies inside Instagram message bubble)
+  buttons      Json?              // Array of { title: string, url: string }
   // AI Settings (for SMARTAI listener)
   aiTone       AI_TONE?           @default(FRIENDLY)
   aiMaxLength  Int?               @default(2)
@@ -143,4 +152,92 @@ enum AI_RESPONSE_STYLE {
   CONCISE
   DETAILED
   BALANCED
+}
+
+enum GOAL_TYPE {
+  TOTAL_RESPONSES
+  DM_RESPONSES
+  COMMENT_RESPONSES
+  CONVERSATIONS
+  RESPONSE_RATE
+  ACTIVE_AUTOMATIONS
+}
+
+enum GOAL_PERIOD {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model Goal {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?      @db.Uuid
+  name        String
+  description String?
+  type        GOAL_TYPE
+  target      Int
+  current     Int          @default(0)
+  period      GOAL_PERIOD  @default(MONTHLY)
+  startDate   DateTime     @default(now())
+  endDate     DateTime?
+  completed   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+}
+
+enum ALERT_TYPE {
+  METRIC_DROP
+  LOW_ENGAGEMENT
+  AUTOMATION_FAILURE
+  GOAL_ACHIEVED
+  THRESHOLD_EXCEEDED
+}
+
+enum METRIC_TYPE {
+  TOTAL_RESPONSES
+  DM_RESPONSES
+  COMMENT_RESPONSES
+  CONVERSATIONS
+  RESPONSE_RATE
+  ACTIVE_AUTOMATIONS
+}
+
+model PerformanceAlert {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?      @db.Uuid
+  name        String
+  description String?
+  type        ALERT_TYPE
+  metricType  METRIC_TYPE
+  threshold   Int          // Percentage drop threshold (e.g., 20 = 20% drop)
+  enabled     Boolean      @default(true)
+  emailNotify Boolean      @default(true)
+  lastTriggered DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+}
+
+model EngagementSnapshot {
+  id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User            User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String?      @db.Uuid
+  date            DateTime     @default(now())
+  totalResponses  Int          @default(0)
+  totalDMs        Int          @default(0)
+  totalComments   Int          @default(0)
+  totalConversations Int       @default(0)
+  responseRate    Float        @default(0)
+  activeAutomations Int        @default(0)
+  createdAt       DateTime     @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+enum AUTOMATION_TYPE {
+  CREATOR
+  BUSINESS
 }

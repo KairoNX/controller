@@ -1,11 +1,40 @@
+// Server-only Stripe SDK initialization
+// DO NOT import this in client components - use stripe-utils.ts for client-side utilities
 import Stripe from 'stripe'
 
-const stripeKey = process.env.STRIPE_SECRET_KEY || process.env.STRIPE_CLIENT_SECRET
+// Initialize Stripe with error handling (server-side only)
+let stripeInstance: Stripe | null = null
 
-if (!stripeKey) {
-  console.error('⚠️ STRIPE_SECRET_KEY or STRIPE_CLIENT_SECRET is not set!')
+// Only initialize if we're on the server (where env vars are available)
+if (typeof window === 'undefined') {
+  try {
+    if (!process.env.STRIPE_CLIENT_SECRET) {
+      console.error('🔴 [Stripe Init] STRIPE_CLIENT_SECRET is not defined in environment variables')
+      throw new Error('STRIPE_CLIENT_SECRET is not defined in environment variables')
+    }
+
+    stripeInstance = new Stripe(process.env.STRIPE_CLIENT_SECRET, {
+      apiVersion: '2025-02-24.acacia' as any,
+      typescript: true,
+    })
+  } catch (error: any) {
+    console.error('🔴 [Stripe Init] Failed to initialize Stripe:', error.message)
+    throw error
+  }
+} else {
+  // On client side, don't initialize - this module should not be imported by client components
+  // Client-side import warning removed for cleaner build logs
 }
 
-export const stripe = new Stripe(stripeKey as string, {
-  apiVersion: '2025-02-24.acacia',
-})
+if (!stripeInstance && typeof window === 'undefined') {
+  throw new Error('Stripe client not initialized')
+}
+
+// Export Stripe instance (will be null on client, but this should never be imported client-side)
+export const stripe = stripeInstance
+
+// Re-export utility functions from stripe-utils for backwards compatibility (server-side only)
+export {
+  dollarsToCents,
+  centsToDollars,
+} from './stripe-utils'

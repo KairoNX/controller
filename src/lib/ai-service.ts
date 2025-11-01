@@ -157,8 +157,7 @@ Important guidelines:
 - If you don't know something, politely say so
 - Never make promises you can't keep
 - Be helpful and solution-oriented
-- Match the brand voice from the prompt
-`
+- Match the brand voice from the prompt`
 
   return prompt
 }

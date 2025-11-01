@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
@@ -11,6 +11,10 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import CustomChatWidget from '@/components/global/chat-widget/custom-chat-widget'
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'] })
+
+export const viewport: Viewport = {
+  themeColor: '#6366F1',
+}
 
 export const metadata: Metadata = {
   title: {
@@ -58,7 +62,6 @@ export const metadata: Metadata = {
     ],
   },
   manifest: '/site.webmanifest',
-  themeColor: '#6366F1',
   openGraph: {
     type: 'website',
     locale: 'en_US',

@@ -1,5 +1,5 @@
 import { useListener } from '@/hooks/use-automations'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import TriggerButton from '../trigger-button'
 import { AUTOMATION_LISTENERS } from '@/constants/automation'
 import { SubscriptionPlan } from '../../subscription-plan'
@@ -12,6 +12,8 @@ import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import Loader from '../../loader'
+import { X } from 'lucide-react'
+import { useQueryAutomation } from '@/hooks/user-queries'
 
 type Props = {
   id: string
@@ -28,10 +30,25 @@ const ThenAction = ({ id }: Props) => {
     setValue,
   } = useListener(id)
 
+  const { data: automationData } = useQueryAutomation(id)
+  
   const aiTone = watch('aiTone') || 'FRIENDLY'
   const aiMaxLength = watch('aiMaxLength') || 2
   const aiUseEmojis = watch('aiUseEmojis') ?? true
   const aiResponseStyle = watch('aiResponseStyle') || 'BALANCED'
+  
+  // State for DM buttons
+  const [buttons, setButtons] = useState<{ title: string; url: string }[]>([])
+
+  // Load existing buttons when automation data is available
+  useEffect(() => {
+    if (automationData?.data?.listener?.buttons) {
+      const existingButtons = automationData.data.listener.buttons as { title: string; url: string }[]
+      if (Array.isArray(existingButtons) && existingButtons.length > 0) {
+        setButtons(existingButtons)
+      }
+    }
+  }, [automationData?.data?.listener?.buttons])
 
   return (
     <TriggerButton label="Then">
@@ -96,6 +113,69 @@ const ThenAction = ({ id }: Props) => {
             placeholder="Add a reply for comments (Optional)"
             className="bg-background-80 outline-none border-none ring-0 focus:ring-0"
           />
+
+          {/* DM Buttons - Show when listener is selected */}
+          {Listener && (
+            <div className="mt-4 p-4 rounded-xl bg-background-80/50 border border-in-active/30 flex flex-col gap-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium text-white/90">DM Buttons (Optional)</Label>
+                {buttons.length < 3 && (
+                  <Button
+                    type="button"
+                    onClick={() => setButtons([...buttons, { title: '', url: '' }])}
+                    className="h-8 px-3 text-xs bg-light-blue/20 text-light-blue hover:bg-light-blue/30 border-none"
+                  >
+                    + Add Button
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-text-secondary">
+                Add buttons that appear inside Instagram DMs (max 3, up to 20 chars each)
+              </p>
+              
+              {buttons.map((button, index) => (
+                <div key={index} className="flex gap-2 items-center">
+                  <Input
+                    placeholder="Button text (max 20 chars)"
+                    value={button.title}
+                    onChange={(e) => {
+                      const newButtons = [...buttons]
+                      newButtons[index].title = e.target.value.slice(0, 20)
+                      setButtons(newButtons)
+                    }}
+                    className="bg-background-80 flex-1 border-in-active/30"
+                    maxLength={20}
+                  />
+                  <Input
+                    placeholder="https://example.com"
+                    value={button.url}
+                    onChange={(e) => {
+                      const newButtons = [...buttons]
+                      newButtons[index].url = e.target.value
+                      setButtons(newButtons)
+                    }}
+                    className="bg-background-80 flex-1 border-in-active/30"
+                    type="url"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => setButtons(buttons.filter((_, i) => i !== index))}
+                    variant="ghost"
+                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-400/10"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              
+              {/* Hidden input to include buttons in form */}
+              <input
+                type="hidden"
+                {...register('buttons')}
+                value={JSON.stringify(buttons.filter(b => b.title && b.url))}
+              />
+            </div>
+          )}
 
           {/* AI Settings - Only show for SMARTAI */}
           {Listener === 'SMARTAI' && (

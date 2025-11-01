@@ -12,12 +12,35 @@ export const sendDM = async (
   userId: string,
   recieverId: string,
   prompt: string,
-  token: string
+  token: string,
+  buttons?: { title: string; url: string }[]
 ) => {
   console.log('[sendDM] Sending message to:', recieverId)
   console.log('[sendDM] Page ID:', userId)
   console.log('[sendDM] Message:', prompt.substring(0, 50))
   
+  // Filter and prepare valid buttons (max 13 quick replies)
+  const validButtons = buttons
+    ? buttons
+        .filter(b => b.title && b.title.trim() && b.url && b.url.startsWith('http'))
+        .slice(0, 13) // Instagram allows up to 13 quick replies
+        .map(b => ({
+          content_type: 'text' as const,
+          title: b.title.slice(0, 20), // Max 20 chars
+          payload: b.url, // Store URL as payload
+        }))
+    : null
+
+  // Build message payload
+  const messagePayload: any = {
+    text: prompt,
+  }
+
+  // Add quick replies if buttons exist
+  if (validButtons && validButtons.length > 0) {
+    messagePayload.quick_replies = validButtons
+  }
+
   try {
     const response = await axios.post(
       `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
@@ -25,9 +48,7 @@ export const sendDM = async (
         recipient: {
           id: recieverId,
         },
-        message: {
-          text: prompt,
-        },
+        message: messagePayload,
       },
       {
         headers: {
@@ -39,8 +60,15 @@ export const sendDM = async (
     console.log('[sendDM] Success:', response.data)
     return response
   } catch (error: any) {
-    console.error('[sendDM] Error response:', error.response?.data)
-    console.error('[sendDM] Error status:', error.response?.status)
+    // Log detailed error information for debugging
+    if (error.response) {
+      console.error('[sendDM] Instagram API Error:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        url: error.config?.url,
+      })
+    }
     console.error('[sendDM] Error message:', error.message)
     throw error
   }

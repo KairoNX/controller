@@ -29,8 +29,8 @@ const UpgradeCard = (props: Props) => {
 
       {/* Price - clear and prominent */}
       <div className="flex items-baseline gap-1.5">
-        <span className="text-xl font-bold text-white">$99</span>
-        <span className="text-xs text-[#9B9CA0]">/month</span>
+        <span className="text-2xl font-bold text-white leading-none">$99</span>
+        <span className="text-xs text-[#9B9CA0] leading-tight">/month</span>
       </div>
 
       <PaymentButton />

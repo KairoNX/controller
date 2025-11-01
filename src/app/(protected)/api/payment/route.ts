@@ -26,6 +26,9 @@ export async function GET() {
       process.env.NEXT_PUBLIC_HOST_URL ||
       'http://localhost:3000'
 
+    if (!stripe) {
+      return NextResponse.json({ error: 'Payment system not available' }, { status: 500 })
+    }
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
