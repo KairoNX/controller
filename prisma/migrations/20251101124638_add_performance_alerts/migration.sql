@@ -1,0 +1,26 @@
+-- CreateEnum
+CREATE TYPE "ALERT_TYPE" AS ENUM ('METRIC_DROP', 'LOW_ENGAGEMENT', 'AUTOMATION_FAILURE', 'GOAL_ACHIEVED', 'THRESHOLD_EXCEEDED');
+
+-- CreateEnum
+CREATE TYPE "METRIC_TYPE" AS ENUM ('TOTAL_RESPONSES', 'DM_RESPONSES', 'COMMENT_RESPONSES', 'CONVERSATIONS', 'RESPONSE_RATE', 'ACTIVE_AUTOMATIONS');
+
+-- CreateTable
+CREATE TABLE "PerformanceAlert" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "userId" UUID,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "type" "ALERT_TYPE" NOT NULL,
+    "metricType" "METRIC_TYPE" NOT NULL,
+    "threshold" INTEGER NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
+    "emailNotify" BOOLEAN NOT NULL DEFAULT true,
+    "lastTriggered" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "PerformanceAlert_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "PerformanceAlert" ADD CONSTRAINT "PerformanceAlert_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

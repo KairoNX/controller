@@ -47,6 +47,15 @@ export const findAutomation = async (id: string) => {
       trigger: true,
       posts: true,
       listener: true,
+      product: {
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          description: true,
+          active: true,
+        },
+      },
       User: {
         select: {
           subscription: true,
@@ -62,6 +71,7 @@ export const updateAutomation = async (
   update: {
     name?: string
     active?: boolean
+    type?: 'CREATOR' | 'BUSINESS'
   }
 ) => {
   return await client.automation.update({
@@ -69,6 +79,7 @@ export const updateAutomation = async (
     data: {
       name: update.name,
       active: update.active,
+      type: update.type,
     },
   })
 }
@@ -78,6 +89,7 @@ export const addListener = async (
   listener: 'SMARTAI' | 'MESSAGE',
   prompt: string,
   reply?: string,
+  buttons?: { title: string; url: string }[],
   aiSettings?: {
     tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
     maxLength?: number
@@ -85,6 +97,14 @@ export const addListener = async (
     responseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
   }
 ) => {
+  // Filter and validate buttons (max 3, must have title and valid URL)
+  const validButtons = buttons
+    ? buttons
+        .filter(b => b.title && b.title.trim() && b.url && b.url.startsWith('http'))
+        .slice(0, 3)
+        .map(b => ({ title: b.title.slice(0, 20), url: b.url }))
+    : []
+
   return await client.automation.update({
     where: {
       id: automationId,
@@ -95,6 +115,7 @@ export const addListener = async (
           listener,
           prompt,
           commentReply: reply,
+          ...(validButtons.length > 0 && { buttons: validButtons }),
           ...(listener === 'SMARTAI' && aiSettings && {
             aiTone: aiSettings.tone || 'FRIENDLY',
             aiMaxLength: aiSettings.maxLength || 2,

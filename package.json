@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:reset": "taskkill /F /IM node.exe 2>nul || true && prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.4.0",
@@ -63,6 +65,7 @@
     "react-redux": "^9.1.2",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.13.3",
+    "resend": "^4.8.0",
     "sonner": "^1.7.0",
     "stripe": "^17.4.0",
     "tailwind-merge": "^2.5.4",

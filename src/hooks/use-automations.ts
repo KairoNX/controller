@@ -76,6 +76,7 @@ export const useListener = (id: string) => {
   const promptSchema = z.object({
     prompt: z.string().min(1),
     reply: z.string().optional(),
+    buttons: z.string().optional(), // JSON string of buttons array
     // AI Settings (only for SMARTAI)
     aiTone: z.enum(['PROFESSIONAL', 'FRIENDLY', 'CASUAL', 'ENTHUSIASTIC']).optional(),
     aiMaxLength: z.number().min(1).max(5).optional(),
@@ -88,17 +89,27 @@ export const useListener = (id: string) => {
     (data: {
       prompt: string
       reply?: string
+      buttons?: string // JSON string
       aiTone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
       aiMaxLength?: number
       aiUseEmojis?: boolean
       aiResponseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
     }) => {
-      const { prompt, reply, aiTone, aiMaxLength, aiUseEmojis, aiResponseStyle } = data
+      const { prompt, reply, buttons, aiTone, aiMaxLength, aiUseEmojis, aiResponseStyle } = data
+      // Parse buttons from JSON string
+      let parsedButtons: { title: string; url: string }[] | undefined
+      try {
+        parsedButtons = buttons ? JSON.parse(buttons) : undefined
+      } catch (e) {
+        parsedButtons = undefined
+      }
+      
       return saveListener(
         id,
         listener || 'MESSAGE',
         prompt,
         reply,
+        parsedButtons,
         listener === 'SMARTAI'
           ? {
               tone: aiTone,

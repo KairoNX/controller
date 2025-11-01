@@ -58,6 +58,7 @@ export const updateAutomationName = async (
     name?: string
     active?: boolean
     automation?: string
+    type?: 'CREATOR' | 'BUSINESS'
   }
 ) => {
   await onCurrentUser()
@@ -77,6 +78,7 @@ export const saveListener = async (
   listener: 'SMARTAI' | 'MESSAGE',
   prompt: string,
   reply?: string,
+  buttons?: { title: string; url: string }[],
   aiSettings?: {
     tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
     maxLength?: number
@@ -86,7 +88,7 @@ export const saveListener = async (
 ) => {
   await onCurrentUser()
   try {
-    const create = await addListener(autmationId, listener, prompt, reply, aiSettings)
+    const create = await addListener(autmationId, listener, prompt, reply, buttons, aiSettings)
     if (create) return { status: 200, data: 'Listener created' }
     return { status: 404, data: 'Cant save listener' }
   } catch (error) {

@@ -132,11 +132,19 @@ export async function POST(req: NextRequest) {
           console.log('[Instagram Webhook] Response prompt:', automation.listener.prompt?.substring(0, 100))
 
           try {
+            // Get buttons from listener (stored as Json)
+            let buttons = automation.listener.buttons 
+              ? (automation.listener.buttons as { title: string; url: string }[])
+              : []
+
+            // Product checkout feature disabled (Business automation type coming soon)
+
             const direct_message = await sendDM(
               webhook_payload.entry[0].id,
               webhook_payload.entry[0].messaging[0].sender.id,
               automation.listener.prompt,
-              automation.User.integrations[0].token
+              automation.User.integrations[0].token,
+              buttons.length > 0 ? buttons : undefined
             )
 
             console.log('[Instagram Webhook] DM send response status:', direct_message.status)
@@ -194,6 +202,7 @@ export async function POST(req: NextRequest) {
 
           let aiResponse
           try {
+            // Business automation type and product features disabled (coming soon)
             aiResponse = await generateAIResponse(
               {
                 userMessage,
@@ -251,11 +260,19 @@ export async function POST(req: NextRequest) {
               await client.$transaction([reciever, sender])
               console.log('[Instagram Webhook] Chat history saved to database')
 
+              // Get buttons from listener (stored as Json)
+              let buttons = automation.listener.buttons 
+                ? (automation.listener.buttons as { title: string; url: string }[])
+                : []
+
+              // Product checkout feature disabled (Business automation type coming soon)
+
               const direct_message = await sendDM(
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
                 aiResponse.message,
-                automation.User.integrations[0].token
+                automation.User.integrations[0].token,
+                buttons
               )
 
               console.log('[Instagram Webhook] DM send response status:', direct_message.status)
@@ -445,6 +462,7 @@ export async function POST(req: NextRequest) {
 
             let aiResponse
             try {
+              // Business automation type and product features disabled (coming soon)
               aiResponse = await generateAIResponse(
                 {
                   userMessage: commentText,
@@ -637,11 +655,17 @@ export async function POST(req: NextRequest) {
                       return NextResponse.json({ error: 'Instagram integration token missing' }, { status: 400 })
                     }
 
+                    // Get buttons from listener (stored as Json)
+                    const buttons = automation.listener.buttons 
+                      ? (automation.listener.buttons as { title: string; url: string }[])
+                      : undefined
+
                     const direct_message = await sendDM(
                       webhook_payload.entry[0].id,
                       webhook_payload.entry[0].messaging[0].sender.id,
                       aiResponse.message,
-                      automation.User.integrations[0].token
+                      automation.User.integrations[0].token,
+                      buttons
                     )
 
                     console.log('[Instagram Webhook] Conversation DM send response:', {

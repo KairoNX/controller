@@ -12,18 +12,40 @@ export const sendDM = async (
   userId: string,
   recieverId: string,
   prompt: string,
-  token: string
+  token: string,
+  buttons?: { title: string; url: string }[]
 ) => {
   console.log('sending message')
+  
+  // Filter and prepare valid buttons (max 13 quick replies)
+  const validButtons = buttons
+    ? buttons
+        .filter(b => b.title && b.title.trim() && b.url && b.url.startsWith('http'))
+        .slice(0, 13) // Instagram allows up to 13 quick replies
+        .map(b => ({
+          content_type: 'text' as const,
+          title: b.title.slice(0, 20), // Max 20 chars
+          payload: b.url, // Store URL as payload
+        }))
+    : null
+
+  // Build message payload
+  const messagePayload: any = {
+    text: prompt,
+  }
+
+  // Add quick replies if buttons exist
+  if (validButtons && validButtons.length > 0) {
+    messagePayload.quick_replies = validButtons
+  }
+
   return await axios.post(
     `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
     {
       recipient: {
         id: recieverId,
       },
-      message: {
-        text: prompt,
-      },
+      message: messagePayload,
     },
     {
       headers: {

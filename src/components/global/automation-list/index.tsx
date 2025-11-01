@@ -17,7 +17,6 @@ const AutomationList = (props: Props) => {
   const { data } = useQueryAutomations()
 
   const { latestVariable } = useMutationDataState(['create-automation'])
-  console.log(latestVariable)
   const { pathname } = usePaths()
   
   const optimisticUiData = useMemo(() => {
@@ -48,7 +47,7 @@ const AutomationList = (props: Props) => {
         >
           <Link
             href={`${pathname}/${automation.id}`}
-            className="flex"
+            className="flex pr-20"
           >
             <div className="flex flex-col flex-1 items-start">
               <h2 className="text-xl font-semibold">
@@ -90,9 +89,9 @@ const AutomationList = (props: Props) => {
                 </div>
               )}
             </div>
-            <div className="flex flex-col justify-between items-end gap-2 pr-12">
+            <div className="flex flex-col justify-between items-end gap-2">
               {automation.createdAt && (
-                <p className="text-sm font-light text-[#9B9CA0]">
+                <p className="text-sm font-light text-[#9B9CA0] whitespace-nowrap">
                   {formatDateWithOrdinal(automation.createdAt)}
                 </p>
               )}
@@ -100,7 +99,7 @@ const AutomationList = (props: Props) => {
               {automation.listener?.listener === 'SMARTAI' ? (
                 <GradientButton
                   type="BUTTON"
-                  className="w-full bg-background-80 text-white hover:bg-background-80"
+                  className="bg-background-80 text-white hover:bg-background-80"
                 >
                   Smart AI
                 </GradientButton>

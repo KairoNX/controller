@@ -81,6 +81,9 @@ export const onUserInfo = async () => {
 export const onSubscribe = async (session_id: string) => {
   const user = await onCurrentUser()
   try {
+    if (!stripe) {
+      return { status: 500, error: 'Payment system not available' }
+    }
     const session = await stripe.checkout.sessions.retrieve(session_id)
     if (session) {
       const subscribed = await updateSubscription(user.id, {
