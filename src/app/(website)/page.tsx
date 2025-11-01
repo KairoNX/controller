@@ -7,10 +7,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { CheckCircle, Sparkles, Zap, TrendingUp } from 'lucide-react'
+import { CheckCircle, Sparkles, Zap, TrendingUp, ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { LogoSmall } from '@/svgs/logo-small'
+import {
+  ClerkLoading,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from '@clerk/nextjs'
 
 export default function Home() {
   // Structured data for SEO
@@ -118,9 +125,37 @@ export default function Home() {
                   About
                 </Link>
               </nav>
-              <Button asChild className="bg-blue-800 text-blue-100 hover:bg-blue-700 hover:text-white transition-all hover:scale-105">
-                <Link href="/dashboard">Login</Link>
-              </Button>
+              <div className="flex items-center gap-3">
+                <ClerkLoading>
+                  <div className="w-9 h-9 rounded-full bg-blue-800/50 animate-pulse" />
+                </ClerkLoading>
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button className="bg-blue-800 text-blue-100 hover:bg-blue-700 hover:text-white transition-all hover:scale-105">
+                      Login
+                    </Button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <Button
+                    asChild
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
+                  >
+                    <Link href="/dashboard">
+                      Dashboard
+                      <ArrowRight className="ml-2 w-4 h-4" />
+                    </Link>
+                  </Button>
+                  <UserButton 
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-9 h-9",
+                        userButtonPopoverCard: "bg-slate-900 border-blue-800",
+                      }
+                    }}
+                  />
+                </SignedIn>
+              </div>
             </div>
 
             {/* Hero Content */}
