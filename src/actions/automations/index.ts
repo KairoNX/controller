@@ -177,15 +177,21 @@ export const getProfilePosts = async () => {
       return { status: 401, data: { data: [] } }
     }
     
+    // Check if Instagram ID exists
+    if (!profile.integrations[0].instagramId) {
+      console.log('🔴 Error: Instagram ID not found')
+      return { status: 401, data: { data: [] } }
+    }
+    
     const instagramBaseUrl = process.env.INSTAGRAM_BASE_URL
     if (!instagramBaseUrl) {
       console.log('🔴 Error: INSTAGRAM_BASE_URL not configured')
       return { status: 500, data: { data: [] } }
     }
     
-    // Fetch posts from Instagram API
+    // Fetch posts from Instagram API using the correct endpoint
     const postsResponse = await fetch(
-      `${instagramBaseUrl}/me/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile.integrations[0].token}`
+      `${instagramBaseUrl}/${profile.integrations[0].instagramId}/media?fields=id,caption,media_url,media_type,timestamp&limit=10&access_token=${profile.integrations[0].token}`
     )
     
     // Check HTTP response status
