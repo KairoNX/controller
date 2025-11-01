@@ -17,15 +17,13 @@ if (typeof window === 'undefined') {
       apiVersion: '2025-02-24.acacia' as any,
       typescript: true,
     })
-
-    console.log('✅ [Stripe Init] Stripe SDK initialized successfully')
   } catch (error: any) {
     console.error('🔴 [Stripe Init] Failed to initialize Stripe:', error.message)
     throw error
   }
 } else {
   // On client side, don't initialize - this module should not be imported by client components
-  console.warn('⚠️ [Stripe Init] stripe.ts imported on client side - this should only be used server-side')
+  // Client-side import warning removed for cleaner build logs
 }
 
 if (!stripeInstance && typeof window === 'undefined') {
