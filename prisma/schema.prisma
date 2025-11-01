@@ -26,8 +26,6 @@ model User {
   goals        Goal[]
   alerts       PerformanceAlert[]
   engagementSnapshots EngagementSnapshot[]
-  products     Product[]
-  transactions Transaction[]
   // Stripe integration
   stripeAccountId String?     @unique // For future Stripe Connect
   stripeCustomerId String?    @unique
@@ -67,8 +65,6 @@ model Automation {
   User      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?   @db.Uuid
   keywords  Keyword[]
-  product   Product?  @relation(fields: [productId], references: [id]) // For BUSINESS type - one product per automation
-  productId String?   @db.Uuid @unique
 }
 
 model Dms {
@@ -241,52 +237,7 @@ model EngagementSnapshot {
   @@index([userId, date])
 }
 
-// E-shop models
-model Product {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  User          User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String?       @db.Uuid
-  name          String
-  description   String?
-  price         Float         // Price in cents (e.g., 1999 = $19.99)
-  imageUrl      String?       // Product image URL
-  stripePriceId String?       @unique // Stripe Price ID
-  stripeProductId String?     @unique // Stripe Product ID
-  active        Boolean       @default(true)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @default(now())
-  automation    Automation?   @relation // Optional: linked to automation
-  transactions  Transaction[]
-}
-
-model Transaction {
-  id                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  User              User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId            String?     @db.Uuid
-  Product           Product?    @relation(fields: [productId], references: [id], onDelete: SetNull)
-  productId         String?     @db.Uuid
-  stripePaymentId   String      @unique // Stripe Payment Intent ID
-  stripeCustomerId  String?     // Stripe Customer ID
-  amount            Float       // Total amount charged (in cents)
-  platformFee       Float       @default(0) // Platform fee (10% of amount)
-  userEarnings      Float       // Amount user earns (amount - platformFee)
-  status            TRANSACTION_STATUS @default(PENDING)
-  currency          String      @default("usd")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @default(now())
-
-  @@index([userId, createdAt])
-  @@index([productId])
-}
-
 enum AUTOMATION_TYPE {
   CREATOR
   BUSINESS
-}
-
-enum TRANSACTION_STATUS {
-  PENDING
-  SUCCEEDED
-  FAILED
-  REFUNDED
 }

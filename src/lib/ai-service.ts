@@ -7,14 +7,6 @@ export type AISettings = {
   responseStyle?: 'concise' | 'detailed' | 'balanced'
 }
 
-export type ProductContext = {
-  id: string
-  name: string
-  description?: string
-  price: number // in cents
-  imageUrl?: string
-}
-
 export type MessageContext = {
   userMessage: string
   conversationHistory?: Array<{ role: 'user' | 'assistant'; content: string }>
@@ -24,8 +16,6 @@ export type MessageContext = {
   }
   automationPrompt: string
   isComment?: boolean
-  productContext?: ProductContext // For BUSINESS automations
-  isSellerMode?: boolean // Indicates this is a selling automation
 }
 
 /**
@@ -150,9 +140,6 @@ function buildSystemPrompt(
     balanced: 'Provide balanced responses with adequate detail.',
   }
 
-  // Import centsToDollars for price formatting
-  const centsToDollars = (cents: number) => (cents / 100).toFixed(2)
-
   let prompt = `You are an AI assistant helping ${context.isComment ? 'respond to comments on Instagram posts' : 'handle Instagram direct messages'} for a business.
 
 Your instructions:
@@ -162,49 +149,7 @@ Tone: ${toneInstructions[tone || 'friendly']}
 Style: ${styleInstructions[responseStyle || 'balanced']}
 Length: Keep responses to ${maxLength} sentence${maxLength > 1 ? 's' : ''} maximum.
 ${useEmojis ? 'You may use emojis sparingly (1-2 max) to add personality.' : 'Do not use emojis.'}
-${context.isComment ? 'Since this is a comment reply, keep it shorter and more engaging.' : 'This is a direct message, maintain conversation flow.'}`
-
-  // Add seller mode instructions if product context exists
-  if (context.isSellerMode && context.productContext) {
-    const product = context.productContext
-    const priceDollars = centsToDollars(product.price)
-
-    prompt += `
-
-🛍️ SELLER MODE - You are helping sell a product:
-
-Product Details:
-- Name: ${product.name}
-${product.description ? `- Description: ${product.description}` : ''}
-- Price: $${priceDollars}
-
-Your selling approach:
-1. Build rapport first - Be friendly and helpful, not pushy
-2. Answer questions - Provide clear information about the product
-3. Highlight value - Focus on benefits and what makes it special
-4. Handle objections naturally - Address concerns without being defensive
-5. Create urgency subtly - Mention limited availability or special offers if appropriate (but only if true)
-6. Guide to purchase - When customer shows interest, naturally mention they can click the "Buy Now" button that appears in the message
-7. Be authentic - Don't oversell or make false claims
-8. Stay in character - Match the brand voice from the automation prompt
-
-Common customer questions to handle:
-- "How much does it cost?" → Mention price ($${priceDollars}) and value
-- "What is it?" → Explain based on product description
-- "Is it worth it?" → Highlight key benefits
-- "Can I see it?" → Mention product details and that purchase unlocks full access
-- "Do you have reviews?" → If asked, be honest - you can mention customer satisfaction without specific reviews
-- Objections (too expensive, not sure, etc.) → Acknowledge concern, provide value perspective, offer to answer more questions
-
-IMPORTANT: 
-- Never hard-sell or be pushy
-- Never make up features or benefits not in the product description
-- Never pressure the customer
-- If they're not interested, be respectful and offer to help with other questions
-- The checkout button will appear automatically - just guide them naturally when appropriate
-- Always be honest and transparent`
-  } else {
-    prompt += `
+${context.isComment ? 'Since this is a comment reply, keep it shorter and more engaging.' : 'This is a direct message, maintain conversation flow.'}
 
 Important guidelines:
 - Be natural and conversational
@@ -213,7 +158,6 @@ Important guidelines:
 - Never make promises you can't keep
 - Be helpful and solution-oriented
 - Match the brand voice from the prompt`
-  }
 
   return prompt
 }

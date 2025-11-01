@@ -47,15 +47,6 @@ export const findAutomation = async (id: string) => {
       trigger: true,
       posts: true,
       listener: true,
-      product: {
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          description: true,
-          active: true,
-        },
-      },
       User: {
         select: {
           subscription: true,

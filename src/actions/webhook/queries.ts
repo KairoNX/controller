@@ -28,16 +28,6 @@ export const getKeywordAutomation = async (
         },
       },
       listener: true,
-      product: {
-        select: {
-          id: true,
-          name: true,
-          price: true,
-          description: true,
-          stripePriceId: true,
-          active: true,
-        },
-      },
       User: {
         select: {
           subscription: {

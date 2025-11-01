@@ -37,8 +37,6 @@ export const stripe = stripeInstance
 
 // Re-export utility functions from stripe-utils for backwards compatibility (server-side only)
 export {
-  calculatePlatformFee,
-  calculateUserEarnings,
   dollarsToCents,
   centsToDollars,
 } from './stripe-utils'
