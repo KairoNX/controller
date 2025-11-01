@@ -14,6 +14,7 @@ const useZodForm = (
     handleSubmit,
     watch,
     reset,
+    setValue,
   } = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -28,6 +29,7 @@ const useZodForm = (
     onFormSubmit,
     watch,
     reset,
+    setValue,
   }
 }
 

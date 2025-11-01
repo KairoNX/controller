@@ -8,7 +8,7 @@ import {
   trackResponses,
 } from '@/actions/webhook/queries'
 import { sendDM, sendPrivateMessage } from '@/lib/fetch'
-import { openai } from '@/lib/openai'
+import { generateAIResponse } from '@/lib/ai-service'
 import { client } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -73,17 +73,21 @@ export async function POST(req: NextRequest) {
             automation.listener.listener === 'SMARTAI' &&
             automation.User?.subscription?.plan === 'PRO'
           ) {
-            const smart_ai_message = await openai.chat.completions.create({
-              model: 'gpt-4o',
-              messages: [
-                {
-                  role: 'assistant',
-                  content: `${automation.listener?.prompt}: Keep responses under 2 sentences`,
-                },
-              ],
-            })
+            const aiResponse = await generateAIResponse(
+              {
+                userMessage: webhook_payload.entry[0].messaging[0].message.text,
+                automationPrompt: automation.listener.prompt,
+                isComment: false,
+              },
+              {
+                tone: (automation.listener.aiTone?.toLowerCase() as 'professional' | 'friendly' | 'casual' | 'enthusiastic') || 'friendly',
+                maxLength: automation.listener.aiMaxLength || 2,
+                useEmojis: automation.listener.aiUseEmojis ?? true,
+                responseStyle: (automation.listener.aiResponseStyle?.toLowerCase() as 'concise' | 'detailed' | 'balanced') || 'balanced',
+              }
+            )
 
-            if (smart_ai_message.choices[0].message.content) {
+            if (aiResponse.success && aiResponse.message) {
               const reciever = createChatHistory(
                 automation.id,
                 webhook_payload.entry[0].id,
@@ -95,7 +99,7 @@ export async function POST(req: NextRequest) {
                 automation.id,
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
-                smart_ai_message.choices[0].message.content
+                aiResponse.message
               )
 
               await client.$transaction([reciever, sender])
@@ -103,7 +107,7 @@ export async function POST(req: NextRequest) {
               const direct_message = await sendDM(
                 webhook_payload.entry[0].id,
                 webhook_payload.entry[0].messaging[0].sender.id,
-                smart_ai_message.choices[0].message.content,
+                aiResponse.message,
                 automation.User?.integrations[0].token!
               )
 
@@ -142,9 +146,7 @@ export async function POST(req: NextRequest) {
         console.log('found keyword ', automations_post)
 
         if (automation && automations_post && automation.trigger) {
-          console.log('first if')
           if (automation.listener) {
-            console.log('first if')
             if (automation.listener.listener === 'MESSAGE') {
               console.log(
                 'SENDING DM, WEB HOOK PAYLOAD',
@@ -183,16 +185,41 @@ export async function POST(req: NextRequest) {
               automation.listener.listener === 'SMARTAI' &&
               automation.User?.subscription?.plan === 'PRO'
             ) {
-              const smart_ai_message = await openai.chat.completions.create({
-                model: 'gpt-4o',
-                messages: [
-                  {
-                    role: 'assistant',
-                    content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
-                  },
-                ],
-              })
-              if (smart_ai_message.choices[0].message.content) {
+              // Get post context for better responses
+              const postContext = automations_post
+                ? await client.post.findFirst({
+                    where: {
+                      postid: webhook_payload.entry[0].changes[0].value.media.id,
+                      automationId: automation.id,
+                    },
+                    select: {
+                      caption: true,
+                      mediaType: true,
+                    },
+                  })
+                : null
+
+              const aiResponse = await generateAIResponse(
+                {
+                  userMessage: webhook_payload.entry[0].changes[0].value.text,
+                  automationPrompt: automation.listener.prompt,
+                  isComment: true,
+                  postContext: postContext
+                    ? {
+                        caption: postContext.caption || undefined,
+                        mediaType: postContext.mediaType || undefined,
+                      }
+                    : undefined,
+                },
+                {
+                  tone: (automation.listener.aiTone?.toLowerCase() as 'professional' | 'friendly' | 'casual' | 'enthusiastic') || 'friendly',
+                  maxLength: automation.listener.aiMaxLength || 2,
+                  useEmojis: automation.listener.aiUseEmojis ?? true,
+                  responseStyle: (automation.listener.aiResponseStyle?.toLowerCase() as 'concise' | 'detailed' | 'balanced') || 'concise',
+                }
+              )
+
+              if (aiResponse.success && aiResponse.message) {
                 const reciever = createChatHistory(
                   automation.id,
                   webhook_payload.entry[0].id,
@@ -204,7 +231,7 @@ export async function POST(req: NextRequest) {
                   automation.id,
                   webhook_payload.entry[0].id,
                   webhook_payload.entry[0].changes[0].value.from.id,
-                  smart_ai_message.choices[0].message.content
+                  aiResponse.message
                 )
 
                 await client.$transaction([reciever, sender])
@@ -212,7 +239,7 @@ export async function POST(req: NextRequest) {
                 const direct_message = await sendPrivateMessage(
                   webhook_payload.entry[0].id,
                   webhook_payload.entry[0].changes[0].value.id,
-                  automation.listener?.prompt,
+                  aiResponse.message,
                   automation.User?.integrations[0].token!
                 )
 
@@ -248,22 +275,22 @@ export async function POST(req: NextRequest) {
           automation?.User?.subscription?.plan === 'PRO' &&
           automation.listener?.listener === 'SMARTAI'
         ) {
-          const smart_ai_message = await openai.chat.completions.create({
-            model: 'gpt-4o',
-            messages: [
-              {
-                role: 'assistant',
-                content: `${automation.listener?.prompt}: keep responses under 2 sentences`,
-              },
-              ...customer_history.history,
-              {
-                role: 'user',
-                content: webhook_payload.entry[0].messaging[0].message.text,
-              },
-            ],
-          })
+          const aiResponse = await generateAIResponse(
+            {
+              userMessage: webhook_payload.entry[0].messaging[0].message.text,
+              automationPrompt: automation.listener.prompt,
+              conversationHistory: customer_history.history,
+              isComment: false,
+            },
+            {
+              tone: (automation.listener.aiTone?.toLowerCase() as 'professional' | 'friendly' | 'casual' | 'enthusiastic') || 'friendly',
+              maxLength: automation.listener.aiMaxLength || 2,
+              useEmojis: automation.listener.aiUseEmojis ?? true,
+              responseStyle: (automation.listener.aiResponseStyle?.toLowerCase() as 'concise' | 'detailed' | 'balanced') || 'balanced',
+            }
+          )
 
-          if (smart_ai_message.choices[0].message.content) {
+          if (aiResponse.success && aiResponse.message) {
             const reciever = createChatHistory(
               automation.id,
               webhook_payload.entry[0].id,
@@ -275,19 +302,17 @@ export async function POST(req: NextRequest) {
               automation.id,
               webhook_payload.entry[0].id,
               webhook_payload.entry[0].messaging[0].sender.id,
-              smart_ai_message.choices[0].message.content
+              aiResponse.message
             )
             await client.$transaction([reciever, sender])
             const direct_message = await sendDM(
               webhook_payload.entry[0].id,
               webhook_payload.entry[0].messaging[0].sender.id,
-              smart_ai_message.choices[0].message.content,
+              aiResponse.message,
               automation.User?.integrations[0].token!
             )
 
             if (direct_message.status === 200) {
-              //if successfully send we return
-
               return NextResponse.json(
                 {
                   message: 'Message sent',

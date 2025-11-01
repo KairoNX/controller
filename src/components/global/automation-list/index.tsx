@@ -9,6 +9,7 @@ import { useQueryAutomations } from '@/hooks/user-queries'
 import CreateAutomation from '../create-automation'
 import { useMutationDataState } from '@/hooks/use-mutation-data'
 import CloneAutomation from '../clone-automation'
+import DeleteAutomation from '../delete-automation'
 
 type Props = {}
 
@@ -20,14 +21,14 @@ const AutomationList = (props: Props) => {
   const { pathname } = usePaths()
   
   const optimisticUiData = useMemo(() => {
-    if ((latestVariable && latestVariable?.variables &&  data)) {
-      const test = [latestVariable.variables, ...data.data]
+    if ((latestVariable && latestVariable?.variables && data?.data)) {
+      const test = [latestVariable.variables, ...(data.data || [])]
       return { data: test }
     }
-    return data || { data: [] }
+    return data?.data ? { data: data.data } : { data: [] }
   }, [latestVariable, data])
 
-  if (data?.status !== 200 || data.data.length <= 0) {
+  if (data?.status !== 200 || !data?.data || data.data.length <= 0) {
     return (
       <div className="h-[70vh] flex justify-center items-center flex-col gap-y-3">
         <h3 className="text-lg text-gray-400">No Automations </h3>
@@ -36,9 +37,11 @@ const AutomationList = (props: Props) => {
     )
   }
 
+  const automationsList = optimisticUiData.data || []
+
   return (
     <div className="flex flex-col gap-y-3">
-      {optimisticUiData.data!.map((automation) => (
+      {automationsList.map((automation) => (
         <div
           key={automation.id}
           className="relative bg-[#1D1D1D] hover:opacity-80 transition duration-100 rounded-xl p-5 border-[1px] radial--gradient--automations border-[#545454]"
@@ -53,11 +56,9 @@ const AutomationList = (props: Props) => {
                 This is from the comment
               </p>
 
-              {automation.keywords.length > 0 ? (
+              {automation.keywords && Array.isArray(automation.keywords) && automation.keywords.length > 0 ? (
                 <div className="flex gap-x-2 flex-wrap mt-3">
-                  {
-                    //@ts-ignore
-                    automation.keywords.map((keyword, key) => (
+                  {automation.keywords.map((keyword: any) => (
                       <div
                         key={keyword.id}
                         className={cn(
@@ -84,13 +85,15 @@ const AutomationList = (props: Props) => {
               )}
             </div>
             <div className="flex flex-col justify-between items-end gap-2 pr-12">
-              <p className="capitalize text-sm font-light text-[#9B9CA0]">
-                {getMonth(automation.createdAt.getUTCMonth() + 1)}{' '}
-                {automation.createdAt.getUTCDate() === 1
-                  ? `${automation.createdAt.getUTCDate()}st`
-                  : `${automation.createdAt.getUTCDate()}th`}{' '}
-                {automation.createdAt.getUTCFullYear()}
-              </p>
+              {automation.createdAt && (
+                <p className="capitalize text-sm font-light text-[#9B9CA0]">
+                  {getMonth(automation.createdAt.getUTCMonth() + 1)}{' '}
+                  {automation.createdAt.getUTCDate() === 1
+                    ? `${automation.createdAt.getUTCDate()}st`
+                    : `${automation.createdAt.getUTCDate()}th`}{' '}
+                  {automation.createdAt.getUTCFullYear()}
+                </p>
+              )}
 
               {automation.listener?.listener === 'SMARTAI' ? (
                 <GradientButton
@@ -106,7 +109,8 @@ const AutomationList = (props: Props) => {
               )}
             </div>
           </Link>
-          <div className="absolute top-5 right-5 z-10">
+          <div className="absolute top-5 right-5 z-10 flex items-center gap-2">
+            <DeleteAutomation automationId={automation.id} automationName={automation.name} />
             <CloneAutomation automationId={automation.id} />
           </div>
         </div>

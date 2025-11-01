@@ -7,6 +7,10 @@ import { cn } from '@/lib/utils'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import Loader from '../../loader'
 
 type Props = {
@@ -20,7 +24,14 @@ const ThenAction = ({ id }: Props) => {
     onFormSubmit,
     register,
     isPending,
+    watch,
+    setValue,
   } = useListener(id)
+
+  const aiTone = watch('aiTone') || 'FRIENDLY'
+  const aiMaxLength = watch('aiMaxLength') || 2
+  const aiUseEmojis = watch('aiUseEmojis') ?? true
+  const aiResponseStyle = watch('aiResponseStyle') || 'BALANCED'
 
   return (
     <TriggerButton label="Then">
@@ -85,6 +96,97 @@ const ThenAction = ({ id }: Props) => {
             placeholder="Add a reply for comments (Optional)"
             className="bg-background-80 outline-none border-none ring-0 focus:ring-0"
           />
+
+          {/* AI Settings - Only show for SMARTAI */}
+          {Listener === 'SMARTAI' && (
+            <div className="mt-4 p-4 rounded-xl bg-background-80/50 border border-in-active/30 flex flex-col gap-y-4">
+              <h3 className="text-sm font-medium text-white/90">AI Response Settings</h3>
+              
+              {/* Tone Selector */}
+              <div className="flex flex-col gap-y-2">
+                <Label className="text-xs text-text-secondary">Response Tone</Label>
+                <Select
+                  value={aiTone}
+                  onValueChange={(value) => setValue('aiTone', value as any)}
+                >
+                  <SelectTrigger className="bg-background-80 border-in-active/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PROFESSIONAL">Professional</SelectItem>
+                    <SelectItem value="FRIENDLY">Friendly</SelectItem>
+                    <SelectItem value="CASUAL">Casual</SelectItem>
+                    <SelectItem value="ENTHUSIASTIC">Enthusiastic</SelectItem>
+                  </SelectContent>
+                </Select>
+                <input
+                  type="hidden"
+                  {...register('aiTone')}
+                  value={aiTone}
+                />
+              </div>
+
+              {/* Max Length Slider */}
+              <div className="flex flex-col gap-y-2">
+                <Label className="text-xs text-text-secondary">
+                  Max Length: {aiMaxLength} sentence{aiMaxLength > 1 ? 's' : ''}
+                </Label>
+                <Slider
+                  value={[aiMaxLength]}
+                  onValueChange={(value) => setValue('aiMaxLength', value[0])}
+                  min={1}
+                  max={5}
+                  step={1}
+                  className="w-full"
+                />
+                <input
+                  type="hidden"
+                  {...register('aiMaxLength', { valueAsNumber: true })}
+                  value={aiMaxLength}
+                />
+              </div>
+
+              {/* Response Style */}
+              <div className="flex flex-col gap-y-2">
+                <Label className="text-xs text-text-secondary">Response Style</Label>
+                <Select
+                  value={aiResponseStyle}
+                  onValueChange={(value) => setValue('aiResponseStyle', value as any)}
+                >
+                  <SelectTrigger className="bg-background-80 border-in-active/30">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="CONCISE">Concise</SelectItem>
+                    <SelectItem value="BALANCED">Balanced</SelectItem>
+                    <SelectItem value="DETAILED">Detailed</SelectItem>
+                  </SelectContent>
+                </Select>
+                <input
+                  type="hidden"
+                  {...register('aiResponseStyle')}
+                  value={aiResponseStyle}
+                />
+              </div>
+
+              {/* Emojis Toggle */}
+              <div className="flex items-center justify-between">
+                <Label className="text-xs text-text-secondary">Use Emojis</Label>
+                <div className="flex items-center gap-x-2">
+                  <Switch
+                    checked={aiUseEmojis}
+                    onCheckedChange={(checked) => setValue('aiUseEmojis', checked)}
+                  />
+                  <input
+                    type="hidden"
+                    {...register('aiUseEmojis')}
+                    checked={aiUseEmojis}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           <Button className="bg-gradient-to-br w-full from-[#3352CC] font-medium text-white to-[#1C2D70]">
             <Loader state={isPending}>Add listener</Loader>
           </Button>

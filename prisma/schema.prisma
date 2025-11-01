@@ -81,14 +81,19 @@ model Post {
 }
 
 model Listener {
-  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  Automation   Automation @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  automationId String     @unique @db.Uuid
-  listener     LISTENERS  @default(MESSAGE)
+  id           String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  Automation   Automation         @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  automationId String             @unique @db.Uuid
+  listener     LISTENERS          @default(MESSAGE)
   prompt       String
   commentReply String?
-  dmCount      Int        @default(0)
-  commentCount Int        @default(0)
+  dmCount      Int                @default(0)
+  commentCount Int                @default(0)
+  // AI Settings (for SMARTAI listener)
+  aiTone       AI_TONE?           @default(FRIENDLY)
+  aiMaxLength  Int?               @default(2)
+  aiUseEmojis  Boolean?           @default(true)
+  aiResponseStyle AI_RESPONSE_STYLE? @default(BALANCED)
 }
 
 model Trigger {
@@ -125,4 +130,17 @@ enum MEDIATYPE {
 enum LISTENERS {
   SMARTAI
   MESSAGE
+}
+
+enum AI_TONE {
+  PROFESSIONAL
+  FRIENDLY
+  CASUAL
+  ENTHUSIASTIC
+}
+
+enum AI_RESPONSE_STYLE {
+  CONCISE
+  DETAILED
+  BALANCED
 }

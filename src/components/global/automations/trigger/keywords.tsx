@@ -21,10 +21,11 @@ export const Keywords = ({ id }: Props) => {
       </p>
       <div className="flex flex-wrap justify-start gap-2 items-center">
         {data?.data?.keywords &&
-          data?.data?.keywords.length > 0 &&
-          data?.data?.keywords.map(
+          Array.isArray(data.data.keywords) &&
+          data.data.keywords.length > 0 &&
+          data.data.keywords.map(
             (word) =>
-              word.id !== latestVariable.variables.id && (
+              word.id !== latestVariable?.variables?.id && (
                 <div
                   className="bg-background-90 flex items-center gap-x-2 capitalize text-text-secondary py-1 px-4 rounded-full"
                   key={word.id}

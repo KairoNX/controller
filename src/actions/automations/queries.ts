@@ -77,7 +77,13 @@ export const addListener = async (
   automationId: string,
   listener: 'SMARTAI' | 'MESSAGE',
   prompt: string,
-  reply?: string
+  reply?: string,
+  aiSettings?: {
+    tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
+    maxLength?: number
+    useEmojis?: boolean
+    responseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
+  }
 ) => {
   return await client.automation.update({
     where: {
@@ -89,8 +95,36 @@ export const addListener = async (
           listener,
           prompt,
           commentReply: reply,
+          ...(listener === 'SMARTAI' && aiSettings && {
+            aiTone: aiSettings.tone || 'FRIENDLY',
+            aiMaxLength: aiSettings.maxLength || 2,
+            aiUseEmojis: aiSettings.useEmojis ?? true,
+            aiResponseStyle: aiSettings.responseStyle || 'BALANCED',
+          }),
         },
       },
+    },
+  })
+}
+
+export const updateListenerAISettings = async (
+  automationId: string,
+  aiSettings: {
+    tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
+    maxLength?: number
+    useEmojis?: boolean
+    responseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
+  }
+) => {
+  return await client.listener.update({
+    where: {
+      automationId,
+    },
+    data: {
+      aiTone: aiSettings.tone,
+      aiMaxLength: aiSettings.maxLength,
+      aiUseEmojis: aiSettings.useEmojis,
+      aiResponseStyle: aiSettings.responseStyle,
     },
   })
 }
@@ -166,6 +200,14 @@ export const addPost = async (
   })
 }
 
+export const deleteAutomation = async (automationId: string) => {
+  return await client.automation.delete({
+    where: {
+      id: automationId,
+    },
+  })
+}
+
 export const cloneAutomation = async (automationId: string, userId: string) => {
   // Fetch the original automation with all related data
   const original = await client.automation.findUnique({
@@ -211,6 +253,10 @@ export const cloneAutomation = async (automationId: string, userId: string) => {
             listener: original.listener.listener,
             prompt: original.listener.prompt,
             commentReply: original.listener.commentReply,
+            aiTone: original.listener.aiTone,
+            aiMaxLength: original.listener.aiMaxLength,
+            aiUseEmojis: original.listener.aiUseEmojis,
+            aiResponseStyle: original.listener.aiResponseStyle,
           },
         },
       }),

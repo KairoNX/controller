@@ -9,10 +9,12 @@ import {
   addTrigger,
   cloneAutomation as cloneAutomationQuery,
   createAutomation,
+  deleteAutomation as deleteAutomationQuery,
   deleteKeywordQuery,
   findAutomation,
   getAutomations,
   updateAutomation,
+  updateListenerAISettings,
 } from './queries'
 
 export const createAutomations = async (id?: string) => {
@@ -74,13 +76,38 @@ export const saveListener = async (
   autmationId: string,
   listener: 'SMARTAI' | 'MESSAGE',
   prompt: string,
-  reply?: string
+  reply?: string,
+  aiSettings?: {
+    tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
+    maxLength?: number
+    useEmojis?: boolean
+    responseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
+  }
 ) => {
   await onCurrentUser()
   try {
-    const create = await addListener(autmationId, listener, prompt, reply)
+    const create = await addListener(autmationId, listener, prompt, reply, aiSettings)
     if (create) return { status: 200, data: 'Listener created' }
     return { status: 404, data: 'Cant save listener' }
+  } catch (error) {
+    return { status: 500, data: 'Oops! something went wrong' }
+  }
+}
+
+export const updateAISettings = async (
+  automationId: string,
+  aiSettings: {
+    tone?: 'PROFESSIONAL' | 'FRIENDLY' | 'CASUAL' | 'ENTHUSIASTIC'
+    maxLength?: number
+    useEmojis?: boolean
+    responseStyle?: 'CONCISE' | 'DETAILED' | 'BALANCED'
+  }
+) => {
+  await onCurrentUser()
+  try {
+    const update = await updateListenerAISettings(automationId, aiSettings)
+    if (update) return { status: 200, data: 'AI settings updated' }
+    return { status: 404, data: 'Listener not found' }
   } catch (error) {
     return { status: 500, data: 'Oops! something went wrong' }
   }
@@ -200,6 +227,20 @@ export const duplicateAutomation = async (automationId: string) => {
     return { status: 404, data: 'Automation not found' }
   } catch (error) {
     console.error('Error duplicating automation:', error)
+    return { status: 500, data: 'Oops! something went wrong' }
+  }
+}
+
+export const deleteAutomation = async (automationId: string) => {
+  await onCurrentUser()
+  try {
+    const deleted = await deleteAutomationQuery(automationId)
+    if (deleted) {
+      return { status: 200, data: 'Automation deleted successfully' }
+    }
+    return { status: 404, data: 'Automation not found' }
+  } catch (error) {
+    console.error('Error deleting automation:', error)
     return { status: 500, data: 'Oops! something went wrong' }
   }
 }

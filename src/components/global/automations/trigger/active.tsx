@@ -27,7 +27,7 @@ const ActiveTrigger = ({ keywords, type }: Props) => {
           : 'If the user send your a message that contains a keyword, this automation will fire'}
       </p>
       <div className="flex  ga-2 mt-5 flex-wrap">
-        {keywords.map((word) => (
+        {Array.isArray(keywords) && keywords.map((word) => (
           <div
             key={word.id}
             className="bg-gradient-to-br from-[#3352CC] to-[#1C2D70] flex items-center gap-x-2 capitalize text-white font-light py-1 px-4 rounded-full"

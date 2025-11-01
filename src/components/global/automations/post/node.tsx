@@ -14,6 +14,7 @@ const PostNode = ({ id }: Props) => {
 
   return (
     data?.data &&
+    Array.isArray(data.data.posts) &&
     data.data.posts.length > 0 && (
       <div className="w-10/12 lg:w-8/12 relative xl:w-4/12 p-5 rounded-xl flex flex-col bg-[#1D1D1D] gap-y-3">
         <div className="absolute h-20 left-1/2 bottom-full flex flex-col items-center z-50">
