@@ -14,15 +14,34 @@ type Props = {
 }
 
 const PostButton = ({ id }: Props) => {
-  const { data } = useQueryAutomationPosts()
+  const { data, isLoading, isError } = useQueryAutomationPosts()
   const { posts, onSelectPost, mutate, isPending } = useAutomationPosts(id)
+
+  // Check if we have posts data
+  const postsData = data?.status === 200 && data?.data?.data && Array.isArray(data.data.data) ? data.data.data : []
+  const hasPosts = postsData.length > 0
 
   return (
     <TriggerButton label="Attach a post">
-      {data?.status === 200 && data?.data?.data ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <Loader state={true}>Loading posts...</Loader>
+        </div>
+      ) : isError || !data ? (
+        <div className="flex flex-col items-center justify-center py-8">
+          <p className="text-text-secondary text-center mb-2">Error loading posts</p>
+          <p className="text-text-secondary/70 text-sm text-center">
+            {data?.status === 401 
+              ? 'Please reconnect your Instagram account'
+              : data?.status === 404
+              ? 'No Instagram integration found. Please connect your account.'
+              : 'Please try again later'}
+          </p>
+        </div>
+      ) : hasPosts ? (
         <div className="flex flex-col gap-y-3 w-full">
           <div className="flex flex-wrap w-full gap-3">
-            {Array.isArray(data.data.data) && data.data.data.map((post: InstagramPostProps) => (
+            {postsData.map((post: InstagramPostProps) => (
               <div
                 className="relative w-4/12 aspect-square rounded-lg cursor-pointer overflow-hidden"
                 key={post.id}
@@ -76,7 +95,12 @@ const PostButton = ({ id }: Props) => {
           </Button>
         </div>
       ) : (
-        <p className="text-text-secondary text-center">No posts found!</p>
+        <div className="flex flex-col items-center justify-center py-8">
+          <p className="text-text-secondary text-center mb-2">No posts found!</p>
+          <p className="text-text-secondary/70 text-sm text-center">
+            Make sure you have posts on your Instagram account
+          </p>
+        </div>
       )}
     </TriggerButton>
   )
