@@ -14,24 +14,36 @@ export const sendDM = async (
   prompt: string,
   token: string
 ) => {
-  console.log('sending message')
-  return await axios.post(
-    `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
-    {
-      recipient: {
-        id: recieverId,
+  console.log('[sendDM] Sending message to:', recieverId)
+  console.log('[sendDM] Page ID:', userId)
+  console.log('[sendDM] Message:', prompt.substring(0, 50))
+  
+  try {
+    const response = await axios.post(
+      `${process.env.INSTAGRAM_BASE_URL}/v21.0/${userId}/messages`,
+      {
+        recipient: {
+          id: recieverId,
+        },
+        message: {
+          text: prompt,
+        },
       },
-      message: {
-        text: prompt,
-      },
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    }
-  )
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    console.log('[sendDM] Success:', response.data)
+    return response
+  } catch (error: any) {
+    console.error('[sendDM] Error response:', error.response?.data)
+    console.error('[sendDM] Error status:', error.response?.status)
+    console.error('[sendDM] Error message:', error.message)
+    throw error
+  }
 }
 
 export const sendPrivateMessage = async (

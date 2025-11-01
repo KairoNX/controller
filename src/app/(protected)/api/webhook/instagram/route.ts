@@ -54,7 +54,15 @@ export async function POST(req: NextRequest) {
     // Handle messaging (DMs)
     if (webhook_payload.entry[0].messaging) {
       try {
-        const messageText = webhook_payload.entry[0].messaging[0]?.message?.text
+        const message = webhook_payload.entry[0].messaging[0]?.message
+        
+        // Skip echo messages (messages sent by the page itself)
+        if (message?.is_echo) {
+          console.log('[Instagram Webhook] Skipping echo message')
+          return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
+        }
+        
+        const messageText = message?.text
         if (!messageText) {
           console.warn('[Instagram Webhook] No message text found in messaging payload')
         } else {
@@ -557,6 +565,12 @@ export async function POST(req: NextRequest) {
       if (!webhook_payload.entry[0]?.messaging) {
         console.log('[Instagram Webhook] No messaging data, returning no automation')
         return NextResponse.json({ message: 'No automation set' }, { status: 200 })
+      }
+      
+      // Skip echo messages in conversation continuation too
+      if (webhook_payload.entry[0].messaging[0]?.message?.is_echo) {
+        console.log('[Instagram Webhook] Skipping echo message in conversation continuation')
+        return NextResponse.json({ message: 'Echo message ignored' }, { status: 200 })
       }
 
       try {
